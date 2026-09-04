@@ -1,0 +1,51 @@
+generated: '2026-09-04'
+method: searched
+source: https://magnifi.ai/faqs
+trust_center_url: null
+note: Magnifi publishes no dedicated trust center or security portal. It does display named certification
+  badges in the footer of every marketing page, and publishes a GDPR Data Processing Agreement. No certificate
+  numbers, certifying bodies, audit dates or downloadable reports are published, so these are claims we
+  verified are MADE, not certificates we verified exist.
+certifications:
+- name: ISO/IEC 27001
+  scope: information security management
+  evidence_url: https://magnifi.ai/faqs
+  certificate_number: null
+  auditor: null
+  verified: claim-published
+- name: ISO/IEC 27701
+  scope: privacy information management
+  evidence_url: https://magnifi.ai/faqs
+  certificate_number: null
+  auditor: null
+  verified: claim-published
+- name: ISO 9001
+  scope: quality management
+  evidence_url: https://magnifi.ai/faqs
+  certificate_number: null
+  auditor: null
+  verified: claim-published
+regulatory:
+- name: GDPR
+  evidence_url: https://magnifi.ai/data-processing-agreement
+  note: Published Data Processing Agreement.
+  verified: document-published
+documents:
+- name: Terms and Conditions
+  url: https://magnifi.ai/terms-conditions
+  status: 200
+- name: Privacy Policy
+  url: https://magnifi.ai/privacy-policy
+  status: 200
+- name: Cookie Policy
+  url: https://magnifi.ai/cookie-policy
+  status: 200
+- name: Data Processing Agreement
+  url: https://magnifi.ai/data-processing-agreement
+  status: 200
+gaps:
+- No SOC 2 report or claim.
+- No published certificate identifiers or audit dates.
+- No trust center, security whitepaper or subprocessor list found.
+- No security.txt on any host.
+- No vulnerability disclosure policy or bug bounty found.

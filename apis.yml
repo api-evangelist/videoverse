@@ -1,18 +1,103 @@
 aid: videoverse
 name: VideoVerse
-description: 'VideoVerse is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  VideoVerse is an AI video technology company founded in 2016 with offices in the United States,
+  Europe and India, whose flagship SaaS platform Magnifi automatically detects key moments in live
+  and archival footage and turns them into broadcast-ready highlights, vertical cuts, multilingual
+  captions and enriched metadata for sports broadcasters, OTT platforms, leagues, teams, rights
+  holders, news and entertainment. Magnifi publishes a partner REST API covering stream ingestion,
+  clip / highlight / highlight-clip retrieval, match-video export, roster (tournament, team, player)
+  and match-schedule management, entity membership, and HMAC-signed webhook event delivery. The
+  company also ships an Adobe Premiere Pro extension and product lines including Digital Highlight
+  Pro, Logo Detection, Content Moderation Pro, Auto Flip, Web Stories and Reely. VideoVerse was
+  acquired by Minute Media in August 2025.
+image: https://wp-dashboard.magnifi.ai/wp-content/uploads/2024/08/image.png
 url: https://raw.githubusercontent.com/api-evangelist/videoverse/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-09-04'
 modified: '2026-09-04'
 tags:
-- Company
-apis: []
+- Video
+- Artificial Intelligence
+- Sports
+- Media
+- Broadcasting
+- Video Editing
+- Highlights
+- Content Creation
+- Machine Learning
+- Webhooks
+tags_raw:
+- video
+- artificial-intelligence
+- sports
+- media
+- broadcasting
+- video-editing
+- highlights
+- content-creation
+- machine-learning
+- webhooks
+apis:
+- name: Magnifi Partner Integration API
+  description: >-
+    Partner REST API for Magnifi by VideoVerse. Partners authenticate with an Access Key and Access
+    Secret pair (x-access-key / x-access-secret headers) and use the API to ingest live or recorded
+    streams (HLS, RTMP, SRT, MP4), read the AI-generated clips, highlights and highlight clips
+    produced from them, export match videos, manage tournament / team / player rosters and match
+    schedules, fetch pre-signed content URLs, manage entity members, and subscribe to change
+    notifications over webhooks. The base URL is issued to each partner with their credentials and
+    is not published, so the contract carries it as the templated server {PARTNER_BASE_URL}.
+  humanURL: https://docs.prod.videoverse.dev/
+  image: https://wp-dashboard.magnifi.ai/wp-content/uploads/2024/08/image.png
+  position: Producing
+  tags:
+  - Video
+  - Artificial Intelligence
+  - Sports
+  - Broadcasting
+  - Highlights
+  - Webhooks
+  tags_raw:
+  - video
+  - artificial-intelligence
+  - sports
+  - broadcasting
+  - highlights
+  - webhooks
+  properties:
+  - type: Documentation
+    url: https://docs.prod.videoverse.dev/
+  - type: APIReference
+    url: https://docs.prod.videoverse.dev/
+  - type: OpenAPI
+    url: openapi/videoverse-magnifi-partner-openapi.yml
+  - type: Postman
+    url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+  - type: PostmanCollection
+    url: postman/videoverse-magnifi-partner-integration.postman_collection.json
+  - type: Authentication
+    url: authentication/videoverse-authentication.yml
+  - type: Conventions
+    url: conventions/videoverse-conventions.yml
+  - type: ErrorCatalog
+    url: errors/videoverse-problem-types.yml
+  - type: DataModel
+    url: data-model/videoverse-data-model.yml
+  - type: Webhooks
+    url: asyncapi/videoverse-magnifi-webhooks.yml
+  - type: Overlay
+    url: overlays/videoverse-magnifi-partner-overlay.yaml
+  - type: Lifecycle
+    url: lifecycle/videoverse-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/videoverse-rate-limits.yml
+  - type: X-MCPServerCandidate
+    url: mcp/videoverse-mcp.yml
+  - type: AgentSkill
+    url: skills/_index.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +105,41 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://vverse.ai/
+- type: DeveloperPortal
+  url: https://docs.prod.videoverse.dev/
+- type: Documentation
+  url: https://docs.prod.videoverse.dev/
+- type: APIReference
+  url: https://docs.prod.videoverse.dev/
+- type: Postman
+  url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+- type: Support
+  url: https://magnifi.ai/raise-a-ticket
+- type: Blog
+  url: https://magnifi.ai/insights/blog
+- type: GitHubOrganization
+  url: https://github.com/magnifi-codeverse
+- type: TermsOfService
+  url: https://magnifi.ai/terms-conditions
+- type: PrivacyPolicy
+  url: https://magnifi.ai/privacy-policy
+- type: Compliance
+  url: security/videoverse-trust-center.yml
+- type: Conformance
+  url: conformance/videoverse-conformance.yml
+- type: Plans
+  url: plans/videoverse-plans-pricing.yml
+- type: Packages
+  url: packages/videoverse-packages.yml
+- type: LLMsTxt
+  url: llms/videoverse-llms.txt
+- type: DomainSecurity
+  url: security/videoverse-domain-security.yml
+- type: Authentication
+  url: authentication/videoverse-authentication.yml
+x-enrichment:
+  date: '2026-09-04'
+  status: enriched
+  artifacts_added: 22
+  pass: local-v3

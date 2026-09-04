@@ -1,0 +1,19 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.prod.videoverse.dev/
+limit_count: 0
+headers: []
+exhaustion_status: null
+note: 'No rate limits are published. The partner documentation introduction covers authentication, resources,
+  the integration workflow and a complete error-code table, and names no quota, throttle, burst or concurrency
+  limit. None of the 75 published response examples carries a RateLimit-*, X-RateLimit-* or Retry-After
+  header, and 429 appears nowhere in the error catalogue. The one capacity constraint the documentation
+  does state is not a rate limit but a provisioning one: error S004 records that an AWS MediaLive channel
+  takes up to five minutes to create, and PA007 that a reserved channel can be unavailable. Limits are
+  undocumented — an honest zero.'
+evidence:
+- url: https://docs.prod.videoverse.dev/
+  status: 200
+- url: https://documenter.gw.postman.com/api/collections/34141959/2sA3s6EpXt?segregateAuth=true&versionTag=latest
+  status: 200
+limits: []

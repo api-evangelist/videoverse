@@ -64,5 +64,38 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-VideoVerse is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.nasdaqprivatemarket.com/
+VideoVerse is an AI video technology company founded in 2016 with offices in the United States,
+Europe and India. Its flagship SaaS platform, **Magnifi**, automatically detects key moments in live
+and archival footage and turns them into broadcast-ready highlights, vertical cuts, multilingual
+captions and enriched metadata for sports broadcasters, OTT platforms, leagues, teams, rights
+holders, news and entertainment. VideoVerse was acquired by Minute Media in August 2025.
+
+## The API surface
+
+Magnifi publishes one API — the **Magnifi Partner Integration API** — documented as a first-party
+Postman collection at <https://docs.prod.videoverse.dev/> (42 paths, 57 operations, all under
+`/v1`). It covers stream ingestion, clip / highlight / highlight-clip retrieval, match-video export,
+roster and match-schedule management, entity membership, and two HMAC-signed webhook mechanisms.
+
+Three things this profile establishes that the marketing site does not say:
+
+- Credentials (an Access Key and an Access Secret, sent as `x-access-key` / `x-access-secret`) are
+  issued by a Magnifi representative. There is no self-serve signup, no published pricing and no
+  sandbox.
+- The API base URL is **not published** — the documentation names it only as the variable
+  `{{PARTNER_BASE_URL}}`. `api.magnifi.ai` is a live Magnifi host but answers `404` for every
+  documented `/v1` path, so it is not the partner base.
+- There is **no idempotency mechanism** across 16 mutating operations, and a created stream has no
+  published delete or cancel.
+
+The OpenAPI in `openapi/` is derived by API Evangelist from that Postman collection; Magnifi does
+not publish an OpenAPI itself.
+
+## Links
+
+- Company: <https://vverse.ai/>
+- Product: <https://magnifi.ai/>
+- Partner API documentation: <https://docs.prod.videoverse.dev/>
+- Public Postman documenter: <https://documenter.getpostman.com/view/34141959/2sA3s6EpXt>
+- Support: <https://magnifi.ai/raise-a-ticket>
+- GitHub: <https://github.com/magnifi-codeverse>

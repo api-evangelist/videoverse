@@ -1,0 +1,110 @@
+# VideoVerse (Magnifi)
+
+> VideoVerse is an AI video technology company founded in 2016 whose flagship SaaS platform,
+> Magnifi, detects key moments in live and archival footage and turns them into broadcast-ready
+> highlights, vertical cuts, multilingual captions and enriched metadata for sports broadcasters,
+> OTT platforms, leagues, teams, rights holders, news and entertainment. VideoVerse was acquired by
+> Minute Media in August 2025.
+
+Generated: 2026-09-04
+Method: generated
+Source: apis.yml and the artifacts in this repository, which are built from https://docs.prod.videoverse.dev/
+Note: VideoVerse publishes no llms.txt of its own. https://magnifi.ai/llms.txt and https://vverse.ai/llms.txt
+both return HTTP 404. This file is written by API Evangelist from public material and is not a
+first-party document.
+
+## What you can actually call
+
+Magnifi publishes ONE API: the Magnifi Partner Integration API, a partner REST API documented as a
+Postman collection at https://docs.prod.videoverse.dev/ (42 paths, 57 operations, /v1).
+
+Three things an agent needs to know before planning against it:
+
+- **You cannot sign up.** Credentials (an Access Key and an Access Secret) are issued by a Magnifi
+  representative to a partner entity. There is no self-serve signup, no free tier and no sandbox.
+- **The base URL is not published.** The documentation refers to it only as the variable
+  `{{PARTNER_BASE_URL}}` and it is issued with the credentials. `api.magnifi.ai` is a live Magnifi
+  host but answers 404 for every documented `/v1` path, so it is not the partner base.
+- **There is no idempotency mechanism.** Sixteen of the 57 operations are mutating and none
+  documents replay protection. A stream, once created, has no published delete or cancel.
+
+## Authentication
+
+Every request carries two headers:
+
+    x-access-key: pak_<your access key>
+    x-access-secret: <your access secret>
+
+An invalid pair returns HTTP 401 `{"message":"Invalid access key or access secret","error":"Unauthorized","statusCode":401}`.
+
+## Surface
+
+- Partner — details, categories, templates, workspaces, stream custom fields, clip naming templates,
+  storage buckets, languages, template audio options
+- Streams — create, update, list, get, and read the clips / highlight clips / highlights / filters /
+  match videos generated from a stream
+- Clips, Highlights, Highlight Clips, Match Video — read the AI-generated content
+- Content — fetch a pre-signed URL for a video or thumbnail
+- Player, Team, Tournament — roster management for player tagging
+- Match Schedule — create, update, delete, de-link and invoke a stream from a fixture
+- Catch me up — a generated catch-up highlight for a stream
+- Webhook / Notifier — topics and subscription management
+- Entity Member — user and role management inside the entity
+
+## Events
+
+Two webhook mechanisms, both HMAC-SHA256 signed in the `x-magnifi-signature` header:
+
+- **Metadata Delivery** — full content metadata pushed while a stream is processing, enabled by
+  setting `publishingWebhookUrl` on the stream. Events include `CLIP_CREATED` and `CLIP_UPDATED`.
+  Retried up to 3 times.
+- **Notifier** — field-level change notifications for `stream`, `clip`, `hlClip` and `matchVideo`,
+  managed through subscriptions. Retried up to 5 times; repeated failures can disable the
+  subscription.
+
+No AsyncAPI document is published.
+
+## Errors
+
+A vendor envelope, not RFC 9457:
+
+    {"statusCode": 404, "error": {"message": "Clip data not found", "code": "C001", "metadata": {}}}
+
+57 named error codes are published across ten families (I, P, PA, S, C, H, M, MS, D, V).
+
+## Artifacts in this repository
+
+- OpenAPI (derived from the provider's Postman collection): openapi/videoverse-magnifi-partner-openapi.yml
+- Postman collection (verbatim, first-party): postman/videoverse-magnifi-partner-integration.postman_collection.json
+- Authentication: authentication/videoverse-authentication.yml
+- Conventions, idempotency and reversibility: conventions/videoverse-conventions.yml
+- Error catalogue (57 codes): errors/videoverse-problem-types.yml
+- Data model (19 entities, 24 relationships): data-model/videoverse-data-model.yml
+- Webhook catalogue: asyncapi/videoverse-magnifi-webhooks.yml
+- Lifecycle and deprecation: lifecycle/videoverse-lifecycle.yml
+- Conformance: conformance/videoverse-conformance.yml
+- Rate limits (none published): rate-limits/videoverse-rate-limits.yml
+- Plans and pricing (none published): plans/videoverse-plans-pricing.yml
+- Packages (no first-party SDK): packages/videoverse-packages.yml
+- Agent Skills: skills/_index.yml
+- MCP candidate (no server exists): mcp/videoverse-mcp.yml
+
+## Links
+
+- Company: https://vverse.ai/
+- Product: https://magnifi.ai/
+- Partner API documentation: https://docs.prod.videoverse.dev/
+- Public Postman documenter: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+- Support ticket: https://magnifi.ai/raise-a-ticket
+- Blog: https://magnifi.ai/insights/blog
+- Terms: https://magnifi.ai/terms-conditions
+- Privacy: https://magnifi.ai/privacy-policy
+- Data Processing Agreement: https://magnifi.ai/data-processing-agreement
+- GitHub: https://github.com/magnifi-codeverse
+
+## Not published
+
+No OpenAPI, no GraphQL, no MCP server, no AsyncAPI, no SDK in any registry, no CLI, no sandbox, no
+status page, no changelog, no pricing page, no rate limits, no security.txt, no /.well-known
+document on any host, and no A2A agent card. Each of those was probed in this pass; see the
+matching artifact for the URL and status code.

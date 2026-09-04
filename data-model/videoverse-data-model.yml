@@ -1,0 +1,279 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/videoverse-magnifi-partner-openapi.yml (itself derived from the provider Postman collection)
+  + https://docs.prod.videoverse.dev/
+api: Magnifi Partner Integration API
+note: Entities and relationships are read from the published request bodies, response examples, sub-resource
+  paths and error-code semantics. Nothing is inferred beyond what one of those states. Magnifi publishes
+  no schema documents, so field-level types come from its own examples.
+root_scope: entityId — the documentation states that all resources and content are associated with the
+  entity (organization or workspace) the access key belongs to.
+entity_count: 19
+relationship_count: 24
+entities:
+- name: Entity
+  description: A partner organization or workspace. Every resource and every piece of content belongs
+    to exactly one entity. entityType is "organization" or "workspace".
+  identifier: entityId (ws_… for a workspace, org_… for an organization)
+  operations:
+  - getPartnerDetails
+  - getPartnerWorkspaces
+- name: User
+  description: A person inside an entity, carrying a role (admin, user).
+  identifier: userId
+  operations:
+  - getPartnerDetails
+  - getAssignableUsers
+- name: EntityMember
+  description: The membership record binding a user to an entity with a role.
+  identifier: entityMemberId (orgMem_… / wsMem_…)
+  operations:
+  - createEntityMember
+  - getEntityMembers
+  - assignRoleToUser
+  - updateEntityMemberRole
+  - removeEntityMember
+- name: Category
+  description: A sport or content classification the entity is entitled to (cricket, football, basketball,
+    …). The primary classification for most content.
+  identifier: id
+  operations:
+  - getPartnerCategories
+- name: Template
+  description: 'A pre-configured video template required for stream ingestion. Grouped by channel type:
+    direct, medialive, reserved_channel.'
+  identifier: id / templateName
+  operations:
+  - getPartnerTemplates
+  - getPartnerTemplateAudioOptions
+- name: StorageBucket
+  description: A partner-configured destination bucket for delivered content.
+  identifier: id
+  operations:
+  - getPartnerStorageBuckets
+- name: Language
+  description: A language available for captions and audio options, identified by an ISO 639 three-letter
+    code.
+  identifier: code
+  operations:
+  - getPartnerLanguages
+- name: Stream
+  description: A live or recorded video feed ingested into Magnifi. All AI-generated content descends
+    from a stream. Carries status, fireAt, aspectRatio, partner custom fields and an optional publishingWebhookUrl.
+  identifier: streamId
+  operations:
+  - createStream
+  - getAllStreams
+  - getStreamByStreamId
+  - updateStreamByStreamId
+  - getFiltersByStreamId
+- name: Clip
+  description: A short video capturing a key moment, generated from a stream. Carries startTime, endTime,
+    duration, players, outcome, rating, transcript and video/thumbnail URLs.
+  identifier: clipId
+  operations:
+  - getByClipId
+  - getClipsByStreamId
+- name: Highlight
+  description: A dynamic compilation of clips assembled from business rules the partner sets.
+  identifier: highlightId
+  operations:
+  - getHighlightByHighlightId
+  - getHighlightsByStreamId
+- name: HighlightClip
+  description: The finalized, rendered version of a highlight, ready for partner use.
+  identifier: hlClipId
+  operations:
+  - getHlClipByHlclipId
+  - getHlClipsByStreamId
+- name: MatchVideo
+  description: An exported video derived from a stream (e.g. partial-video), with a processing status
+    and progress.
+  identifier: matchVideoId
+  operations:
+  - getMatchVideoByMatchVideoId
+  - getAllMatchVideos
+  - getMatchVideosByStreamId
+- name: CatchMeUpHighlight
+  description: A generated catch-up highlight for a stream, produced against a catch-me-up config and
+    returning clips with pre-signed URLs.
+  identifier: id (cmu_hl_…), configId (cmu_cfg_…)
+  operations:
+  - getCatchMeUpHighlight
+- name: Player
+  description: A roster player, with a category and free-form metadata (jersey number, nickname).
+  identifier: id
+  operations:
+  - addPlayer
+  - getAllPlayers
+  - getPlayerByPlayerId
+  - updatePlayerByPlayerId
+- name: Team
+  description: A roster team holding players, with a category and free-form metadata (short name).
+  identifier: teamId / id
+  operations:
+  - addTeam
+  - getAllTeams
+  - getTeamByTeamId
+  - updateTeamByTeamId
+- name: Tournament
+  description: A competition holding teams, with a category and free-form metadata (sponsor).
+  identifier: id
+  operations:
+  - addTournament
+  - getAllTournaments
+  - getTournamentByTournamentId
+  - updateTournamentByTournamentId
+- name: MatchSchedule
+  description: A scheduled fixture that can be linked to a stream. Carries matchStartTime, timezone, venue,
+    HOME/AWAY teams, a tournament and an external match id.
+  identifier: id (msh_…), extMatchId (ext_match_…)
+  operations:
+  - createMatchSchedule
+  - getAllMatchSchedules
+  - getMatchScheduleByMatchScheduleId
+  - updateMatchScheduleByMatchScheduleId
+  - deleteMatchScheduleByMatchScheduleId
+  - deLinkByMatchScheduleId
+  - invokeStreamByMatchScheduleId
+- name: NotifierSubscription
+  description: A webhook subscription to change events on a resource type, scoped to operations and fields,
+    with isActive and failureCount.
+  identifier: subscriptionId (sub_ntf_…)
+  operations:
+  - createSubscription
+  - getSubscriptions
+  - getSubscriptionBySubscriptionId
+  - updateSubscription
+  - deleteSubscription
+- name: NotifierTopic
+  description: The catalogue of subscribable resource types with their available operations, standard
+    fields and category-scoped custom fields.
+  identifier: resourceType
+  operations:
+  - fetchTopics
+relationships:
+- from: Entity
+  to: User
+  type: has_many
+  via: entityId
+  evidence: getPartnerDetails returns user and entity together; every resource example carries entityId.
+- from: Entity
+  to: EntityMember
+  type: has_many
+  via: entityMemberId
+  evidence: getEntityMembers
+- from: EntityMember
+  to: User
+  type: belongs_to
+  via: userId
+  evidence: createEntityMember response returns entityMemberId and userId.
+- from: Entity
+  to: Category
+  type: has_many
+  via: category
+  evidence: getPartnerCategories — "categories allotted to partners".
+- from: Stream
+  to: Category
+  type: belongs_to
+  via: category
+  evidence: createStream request body category; error S008 StreamTournamentCategoryMismatch.
+- from: Stream
+  to: Template
+  type: belongs_to
+  via: templateName / templateId
+  evidence: createStream request templateName, response templateId; error S013 StreamTemplateChangeNotAllowed.
+- from: Stream
+  to: Clip
+  type: has_many
+  via: streamId
+  evidence: GET /v1/stream/{streamId}/clips
+- from: Stream
+  to: Highlight
+  type: has_many
+  via: streamId
+  evidence: GET /v1/stream/{streamId}/highlights
+- from: Stream
+  to: HighlightClip
+  type: has_many
+  via: streamId
+  evidence: GET /v1/stream/{streamId}/hlclips
+- from: Stream
+  to: MatchVideo
+  type: has_many
+  via: streamId
+  evidence: GET /v1/stream/{streamId}/match-videos
+- from: Clip
+  to: Stream
+  type: belongs_to
+  via: streamId
+  evidence: Webhook clip payload carries streamId; error C002 ClipsDataForStreamNotFound.
+- from: Highlight
+  to: Clip
+  type: has_many
+  via: clipId
+  evidence: A highlight is "a dynamic compilation of clips"; error C003 ClipsDataForHighlightNotFound.
+- from: HighlightClip
+  to: Clip
+  type: has_many
+  via: clips
+  evidence: Notifier topic hlClip lists a "clips" standard field.
+- from: CatchMeUpHighlight
+  to: Clip
+  type: has_many
+  via: clipId
+  evidence: getCatchMeUpHighlight returns catchMeUpHL.clips[] with clipId and preSignedUrl.
+- from: CatchMeUpHighlight
+  to: Stream
+  type: belongs_to
+  via: streamId
+  evidence: getCatchMeUpHighlight query parameter streamId.
+- from: Team
+  to: Player
+  type: has_many
+  via: players
+  evidence: addTeam request body players[] of player ids; response embeds the player objects.
+- from: Tournament
+  to: Team
+  type: has_many
+  via: teams
+  evidence: addTournament request body teams[] of team ids; response embeds the team objects.
+- from: Stream
+  to: Tournament
+  type: belongs_to
+  via: tournamentId
+  evidence: Errors S005 StreamTournamentIdIncorrect and S008 StreamTournamentCategoryMismatch.
+- from: Stream
+  to: Team
+  type: has_many
+  via: teamId
+  evidence: Errors S006 StreamTeamIdIncorrect and S007 StreamTeamNotInTournament.
+- from: MatchSchedule
+  to: Team
+  type: has_many
+  via: teams[].teamId
+  evidence: createMatchSchedule request body teams[] with HOME/AWAY type.
+- from: MatchSchedule
+  to: Tournament
+  type: belongs_to
+  via: tournament
+  evidence: createMatchSchedule request body tournament.
+- from: MatchSchedule
+  to: Stream
+  type: has_one
+  via: streamId
+  evidence: createMatchSchedule response carries streamId and streamUrl (null until linked); invokeStreamByMatchScheduleId
+    links one, deLinkByMatchScheduleId unlinks; error S009 StreamAlreadyExists guards one stream per matchScheduleId.
+- from: Entity
+  to: NotifierSubscription
+  type: has_many
+  via: subscriptionId
+  evidence: getSubscriptions is scoped to the calling entity.
+- from: NotifierSubscription
+  to: NotifierTopic
+  type: belongs_to
+  via: resourceType
+  evidence: createSubscription resourceType must be one of the topics fetchTopics returns.
+content_lineage: 'Stream -> Clip -> Highlight -> HighlightClip is the core production chain the documentation
+  describes: a stream is ingested, clips are detected within it, highlights compile clips under partner
+  business rules, and a highlight clip is the finalized render.'

@@ -1,0 +1,49 @@
+generated: '2026-09-04'
+method: generated
+source: openapi/videoverse-magnifi-partner-openapi.yml + asyncapi/videoverse-magnifi-webhooks.yml
+api: Magnifi Partner Integration API
+note: Magnifi publishes no skills or AGENTS.md of its own; searched magnifi.ai, vverse.ai, docs.prod.videoverse.dev
+  and github.com/magnifi-codeverse. These skills are written by API Evangelist and every operationId in
+  them is grepped from the derived contract.
+skill_count: 3
+skills:
+- name: videoverse-ingest-live-stream
+  file: skills/videoverse-ingest-live-stream.md
+  description: Ingest a live or recorded feed into Magnifi and collect the AI-generated clips, highlights
+    and highlight clips it produces.
+  operations:
+  - getPartnerDetails
+  - getPartnerCategories
+  - getPartnerTemplates
+  - getPartnerStreamCustomFields
+  - createStream
+  - getStreamByStreamId
+  - getClipsByStreamId
+  - getHighlightsByStreamId
+  - getHlClipsByStreamId
+  - fetchPresignedUrl
+- name: videoverse-schedule-match-and-link-stream
+  file: skills/videoverse-schedule-match-and-link-stream.md
+  description: Build a tournament/team/player roster, create a match schedule from it, and link or unlink
+    a stream to that fixture.
+  operations:
+  - addPlayer
+  - addTeam
+  - addTournament
+  - createMatchSchedule
+  - getAllMatchSchedules
+  - getMatchScheduleByMatchScheduleId
+  - updateMatchScheduleByMatchScheduleId
+  - invokeStreamByMatchScheduleId
+  - deLinkByMatchScheduleId
+  - deleteMatchScheduleByMatchScheduleId
+- name: videoverse-subscribe-to-content-events
+  file: skills/videoverse-subscribe-to-content-events.md
+  description: Subscribe to Magnifi content change events over webhooks and verify their HMAC signatures.
+  operations:
+  - fetchTopics
+  - createSubscription
+  - getSubscriptions
+  - getSubscriptionBySubscriptionId
+  - updateSubscription
+  - deleteSubscription

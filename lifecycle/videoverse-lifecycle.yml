@@ -1,0 +1,49 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.prod.videoverse.dev/
+versioning:
+  scheme: URI path
+  current: v1
+  policy_url: null
+  note: All 42 documented paths are under /v1. No versioning policy document is published.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  note: No deprecation policy, Sunset header or Deprecation header is documented. One operation is nevertheless
+    marked as deprecating in the provider's own collection.
+  deprecated_operations:
+  - operationId: generatePreSignedUrl
+    method: POST
+    path: /v1/partner/getPreSignedUrl
+    marker: Named "[TO BE DEPRECATED] Generate Pre-signed Url" in the provider's published Postman collection.
+    sunset_date: null
+    replacement: fetchPresignedUrl (POST /v1/content/presigned-url)
+    source: https://docs.prod.videoverse.dev/
+status_page:
+  published: false
+  probed:
+  - url: https://status.magnifi.ai/
+    status: 0
+    note: DNS does not resolve
+  - url: https://magnifi.ai/status
+    status: 404
+  note: No status page or uptime dashboard could be found on any VideoVerse or Magnifi host.
+sla:
+  published: false
+  note: No public SLA. Terms are at https://magnifi.ai/terms-conditions and a Data Processing Agreement
+    at https://magnifi.ai/data-processing-agreement.
+changelog:
+  published: false
+  note: No dated API changelog or release-notes page. The nearest surfaces are the Magnifi Insights blog
+    (https://magnifi.ai/insights/blog) and the VideoVerse newsroom (https://vverse.ai/media/), which are
+    marketing rather than API change records.
+support:
+  url: https://magnifi.ai/raise-a-ticket
+  note: Ticket form. The partner documentation directs integrators to their Magnifi representative for
+    credentials.
+ownership:
+  note: VideoVerse was acquired by Minute Media in August 2025. The Magnifi product, the magnifi.ai domain
+    and the videoverse.dev documentation host all remain live and separately branded as of this pass.
+  source: https://www.businesswire.com/news/home/20250826058276/en/Minute-Media-Acquires-VideoVerse-Owner-of-Magnifi-a-Leading-AI-Sports-Video-Technology-Platform

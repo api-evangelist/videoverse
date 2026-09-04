@@ -1,0 +1,71 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements — Magnifi Partner Integration API
+  version: 1.0.0
+x-generated: '2026-09-04'
+x-method: generated
+x-source: openapi/videoverse-magnifi-partner-openapi.yml
+x-note: >-
+  Overlay of the enhancements API Evangelist applies on top of the Magnifi partner contract. The
+  underlying openapi/videoverse-magnifi-partner-openapi.yml is itself derived from the first-party
+  Postman collection at https://docs.prod.videoverse.dev/, so this overlay records only what API
+  Evangelist added beyond that collection — cross-links to the repo artifacts, the deprecation
+  marker the provider states in prose, and the honest record that the base URL is not published.
+  It never mutates the source document.
+extends: openapi/videoverse-magnifi-partner-openapi.yml
+actions:
+  - target: $.info
+    description: Cross-link the derived contract to the artifacts that explain its runtime semantics.
+    update:
+      x-artifacts:
+        errors: errors/videoverse-problem-types.yml
+        conventions: conventions/videoverse-conventions.yml
+        authentication: authentication/videoverse-authentication.yml
+        lifecycle: lifecycle/videoverse-lifecycle.yml
+        data-model: data-model/videoverse-data-model.yml
+        webhooks: asyncapi/videoverse-magnifi-webhooks.yml
+        rate-limits: rate-limits/videoverse-rate-limits.yml
+        conformance: conformance/videoverse-conformance.yml
+        skills: skills/_index.yml
+        postman-source: postman/videoverse-magnifi-partner-integration.postman_collection.json
+  - target: $.servers[0]
+    description: >-
+      Record that the base URL is genuinely unpublished rather than merely missing, and that
+      api.magnifi.ai was probed and ruled out.
+    update:
+      x-base-url-status: not-published
+      x-base-url-evidence:
+        - url: https://api.magnifi.ai/v1/partner/details
+          status: 404
+          note: The one reachable Magnifi API host answers 404 for every documented /v1 path, so it is not the partner base.
+        - url: https://api.magnifi.ai/health
+          status: 200
+          note: Host is live and serving a Fastify-shaped JSON API, but not this contract.
+  - target: $.paths['/v1/partner/getPreSignedUrl'].post
+    description: >-
+      Carry the provider's own "[TO BE DEPRECATED]" marker into machine-readable form and name the
+      replacement operation.
+    update:
+      deprecated: true
+      x-replaced-by: fetchPresignedUrl
+      x-deprecation-source: https://docs.prod.videoverse.dev/
+  - target: $.components.securitySchemes.AccessKey
+    description: Record that credentials are issued by a Magnifi representative, not self-serve.
+    update:
+      x-onboarding: sales-issued
+      x-self-serve: false
+  - target: $.paths['/v1/stream'].post
+    description: >-
+      Flag the write surface an agent cannot take back. The provider's error table states the stream
+      URL, fireAt, template and category may not be changed after creation, and publishes no delete
+      or cancel operation for a stream.
+    update:
+      x-reversible: false
+      x-reversibility-note: >-
+        No delete or cancel operation is published for a stream. Errors S010, S011, S013 and S014
+        forbid changing the URL, fireAt, template and category after creation.
+  - target: $.paths['/v1/match-schedule/{matchScheduleId}/invoke-stream'].post
+    description: Name the documented reversal for linking a stream to a match schedule.
+    update:
+      x-reversal-operation: deLinkByMatchScheduleId
+      x-reversal-window: null

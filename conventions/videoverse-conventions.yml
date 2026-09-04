@@ -1,0 +1,159 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.prod.videoverse.dev/
+api: Magnifi Partner Integration API
+authentication:
+  style: two-part API key in headers
+  headers:
+  - x-access-key
+  - x-access-secret
+  key_prefix: pak_ (documented example)
+  issuance: Access Key and Access Secret are issued by Magnifi to each partner entity (organization or
+    workspace). There is no self-serve signup.
+  oauth: false
+  artifact: authentication/videoverse-authentication.yml
+base_url:
+  published: false
+  value: '{PARTNER_BASE_URL}'
+  note: The partner documentation references the base only as the Postman variable {{PARTNER_BASE_URL}};
+    the concrete host is issued with the credentials. Probing api.magnifi.ai (the one live Magnifi API
+    host we could find) returns 404 for every documented /v1 path, so it is NOT the partner base and is
+    not recorded as one.
+versioning:
+  style: URI path
+  current: v1
+  all_paths_prefixed: true
+  policy_published: false
+  note: Every documented path begins /v1. No written versioning or deprecation policy is published.
+pagination:
+  style: page-number
+  request_params:
+  - name: page
+    in: query
+    type: integer
+    description: Page number to retrieve.
+  - name: pageSize
+    in: query
+    type: integer
+    description: Number of items per page.
+  response_fields:
+  - currentPage
+  - pageSize
+  - totalItems
+  - totalPages
+  error: D003 PaginationOutOfRange is returned when the requested page is beyond the result set.
+  note: Applies to the list endpoints (partner categories, streams, clips, hlclips, highlights, match
+    videos, players, teams, tournaments, match schedules, notifier subscriptions).
+response_envelope:
+  shape:
+    statusCode: integer
+    message: string
+    data: object (resource payload)
+  note: Successful responses wrap the payload in a statusCode / message / data envelope. A few endpoints
+    (POST /v1/stream) return the resource under a named key (stream) instead of data.
+error_envelope:
+  artifact: errors/videoverse-problem-types.yml
+  rfc9457: false
+  code_field: error.code
+filtering:
+  note: Stream listing supports category, startTime, endTime and a JSON filters object keyed on partner
+    custom fields (e.g. {"ext-match-id":"uuid"}). Match-video listing supports search, type, status and
+    sort.
+idempotency:
+  coverage: none
+  mechanism: null
+  header: null
+  note: 'No Idempotency-Key header, client-supplied request key, or replay-safety statement appears anywhere
+    in the partner documentation or in any of the 57 published requests. Sixteen of the 57 operations
+    are mutating (POST/PUT/PATCH/DELETE) and none of them documents replay protection. The nearest thing
+    is a uniqueness constraint the server enforces on its own: S009 StreamAlreadyExists rejects a second
+    stream for the same matchScheduleId, PA009 PartnerClipMappingAlreadyExists rejects a duplicate clip
+    mapping, MS007 MatchScheduleExternalIdAlreadyExists rejects a duplicate external match id, and D001
+    DuplicateEntryFound is a general duplicate guard. Those prevent some duplicate RESOURCES; they are
+    not a documented idempotency mechanism and an agent cannot safely retry a POST on the strength of
+    them.'
+  scope: []
+reversibility:
+  grade: documented
+  note: Reversal operations exist and are documented, but no published operation states a window inside
+    which a reversal is valid, so this grades documented rather than verified. Two of the write surfaces
+    are explicitly ONE-WAY and the provider says so in its error table.
+  reversible:
+  - write: createMatchSchedule (POST /v1/match-schedule)
+    reversal: deleteMatchScheduleByMatchScheduleId (DELETE /v1/match-schedule/{matchScheduleId})
+    window: null
+    window_published: false
+    source: https://docs.prod.videoverse.dev/
+  - write: invokeStreamByMatchScheduleId (POST /v1/match-schedule/{matchScheduleId}/invoke-stream)
+    reversal: deLinkByMatchScheduleId (POST /v1/match-schedule/{matchScheduleId}/de-link)
+    window: null
+    window_published: false
+    source: https://docs.prod.videoverse.dev/
+    note: De-link detaches a stream from a match schedule; the documentation does not say whether it can
+      be run after the stream has started or finished.
+  - write: createSubscription (POST /v1/webhook/notifier/subscription)
+    reversal: deleteSubscription (DELETE /v1/webhook/notifier/subscription/{subscriptionId})
+    window: null
+    window_published: false
+    source: https://docs.prod.videoverse.dev/
+  - write: createEntityMember (POST /v1/entity-member) / assignRoleToUser
+    reversal: removeEntityMember (DELETE /v1/entity-member/{entityMemberId})
+    window: null
+    window_published: false
+    source: https://docs.prod.videoverse.dev/
+  irreversible:
+  - write: createStream (POST /v1/stream)
+    note: No delete or cancel operation for a stream is published. The error table states the stream URL
+      (S010), fireAt (S011), template (S013) and category (S014) may NOT be changed after creation, so
+      a mis-created stream cannot be corrected or withdrawn through the published API.
+    source: https://docs.prod.videoverse.dev/
+  - write: addPlayer / addTeam / addTournament
+    note: Roster objects can be updated (PUT) but no delete operation is published.
+    source: https://docs.prod.videoverse.dev/
+dry_run_mode:
+  supported: false
+  note: No test mode, dry-run flag, simulation endpoint or sandbox environment is published.
+rate_limit_signalling:
+  published: false
+  artifact: rate-limits/videoverse-rate-limits.yml
+  note: No RateLimit-*, X-RateLimit-* or Retry-After header, quota or 429 behaviour is documented, and
+    no response example in the collection carries one.
+request_id_tracing:
+  published: false
+  note: No request-id / correlation-id header is documented. Webhook notifier events do carry an eventId
+    (evt_ntf_<uuid>) and a subscriptionId (sub_ntf_<uuid>).
+identifiers:
+  note: Identifier shapes visible in the published examples.
+  prefixes:
+  - prefix: pak_
+    applies_to: partner access key
+  - prefix: ws_
+    applies_to: workspace entityId
+  - prefix: org_
+    applies_to: organizationId
+  - prefix: wsMem_
+    applies_to: workspace member id
+  - prefix: orgMem_
+    applies_to: organization member id (entityMemberId)
+  - prefix: msh_
+    applies_to: match schedule id
+  - prefix: ext_match_
+    applies_to: external match id
+  - prefix: sub_ntf_
+    applies_to: notifier subscription id
+  - prefix: evt_ntf_
+    applies_to: notifier event id
+  - prefix: cmu_hl_ / cmu_cfg_
+    applies_to: catch-me-up highlight and config ids
+  unprefixed: streamId, clipId, highlightId, hlClipId, matchVideoId, teamId, tournament and player ids
+    are opaque strings (short nanoid-style tokens or 24-character hex object ids).
+webhooks:
+  artifact: asyncapi/videoverse-magnifi-webhooks.yml
+  signature_header: x-magnifi-signature
+  algorithm: HMAC-SHA256
+cross_links:
+  errors: errors/videoverse-problem-types.yml
+  lifecycle: lifecycle/videoverse-lifecycle.yml
+  authentication: authentication/videoverse-authentication.yml
+  rate_limits: rate-limits/videoverse-rate-limits.yml
+  openapi: openapi/videoverse-magnifi-partner-openapi.yml

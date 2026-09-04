@@ -1,0 +1,23 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/videoverse-magnifi-partner-openapi.yml
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+schemes:
+- name: AccessKey
+  type: apiKey
+  in: header
+  parameter: x-access-key
+  description: 'Partner Access Key issued by Magnifi. Documented example prefix: pak_.'
+  sources:
+  - openapi/videoverse-magnifi-partner-openapi.yml
+- name: AccessSecret
+  type: apiKey
+  in: header
+  parameter: x-access-secret
+  description: Partner Access Secret issued by Magnifi. Sent on every request alongside x-access-key.
+  sources:
+  - openapi/videoverse-magnifi-partner-openapi.yml

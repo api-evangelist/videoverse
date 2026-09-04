@@ -1,0 +1,132 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.prod.videoverse.dev/
+asyncapi_published: false
+note: 'Magnifi documents TWO distinct webhook mechanisms and publishes no AsyncAPI document for either.
+  Captured here as a webhook catalog. Nothing is invented: every event name, header, field list and retry
+  count below is stated in the provider''s own documentation.'
+transport: HTTPS POST to a partner-supplied URL
+mechanisms:
+- name: Metadata Delivery
+  summary: Real-time push of content metadata while a stream is being processed.
+  enabled_by: Setting publishingWebhookUrl on the stream at creation time (POST /v1/stream).
+  payload_shape:
+    data:
+      metadata: object — matches the structure the direct API returns for that resource
+      version: 2
+    event: string
+  events:
+  - CLIP_CREATED
+  - CLIP_UPDATED
+  events_note: The documentation names CLIP_CREATED and CLIP_UPDATED explicitly and says "or CLIP_UPDATED,
+    etc." — the full event vocabulary is not enumerated by the provider, so only the named events are
+    recorded here.
+  delivery: One CLIP_CREATED may be followed by multiple CLIP_UPDATED events for the same content, because
+    stream processing is multi-stage.
+  retries: 3
+  authentication:
+  - method: HMAC signature (recommended)
+    algorithm: HMAC-SHA256
+    over: raw request payload
+    header: x-magnifi-signature
+    secret: partner-supplied secret key configured on the Magnifi side
+  - method: Static secret header (optional)
+    header: partner-chosen custom header name
+    value: partner-supplied expected secret value
+- name: Notifier
+  summary: Change notifications across the organization or workspace. Events say WHICH FIELDS changed,
+    not the full content.
+  enabled_by: POST /v1/webhook/notifier/subscription (createSubscription), scoped to a resourceType, operations,
+    standardFields and customFields.
+  management_operations:
+  - fetchTopics
+  - createSubscription
+  - updateSubscription
+  - getSubscriptions
+  - getSubscriptionBySubscriptionId
+  - deleteSubscription
+  payload_shape:
+    eventId: string (evt_ntf_<uuid>)
+    subscriptionId: string (sub_ntf_<uuid>)
+    resourceId: string
+    resourceType: stream | clip | hlClip | matchVideo
+    operation: CREATE | UPDATE
+    changedStandardFields: array of string
+    changedCustomFields: array of string
+    version: 2
+    timestamp: ISO 8601
+  topics:
+  - resourceType: stream
+    operations:
+    - CREATE
+    - UPDATE
+    standardFields:
+    - title
+    - status
+    customFields: []
+  - resourceType: matchVideo
+    operations:
+    - CREATE
+    - UPDATE
+    standardFields:
+    - matchVideoTitle
+    - status
+    - progress
+    - videoUrl
+    customFields: []
+  - resourceType: clip
+    operations:
+    - CREATE
+    - UPDATE
+    standardFields:
+    - clipTitle
+    - startTime
+    - endTime
+    - duration
+    - players
+    - outcome
+    - rating
+    - transcript
+    - videoUrl
+    - videoThumbnailUrl
+    - aspectRatiosAvailableIn
+    customFields:
+    - fieldName: batsman
+      category: cricket
+    - fieldName: bowler
+      category: cricket
+    - fieldName: corner
+      category: football
+  - resourceType: hlClip
+    operations:
+    - CREATE
+    - UPDATE
+    standardFields:
+    - hlClipTitle
+    - duration
+    - players
+    - outcome
+    - rating
+    - videoUrl
+    - clips
+    customFields:
+    - fieldName: batsman
+      category: cricket
+    - fieldName: bowler
+      category: cricket
+    - fieldName: corner
+      category: football
+  retries: 5
+  failure_policy: Repeated delivery failures may automatically disable the subscription. Subscription
+    state carries isActive and failureCount; error PA013 PartnerNotifierSubscriptionInactive is returned
+    for an inactive subscription.
+  authentication:
+  - method: HMAC signature
+    algorithm: HMAC-SHA256
+    header: x-magnifi-signature
+    secret: secretKey supplied when the subscription is created
+evidence:
+- url: https://docs.prod.videoverse.dev/
+  status: 200
+- url: https://documenter.gw.postman.com/api/collections/34141959/2sA3s6EpXt?segregateAuth=true&versionTag=latest
+  status: 200

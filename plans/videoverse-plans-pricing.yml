@@ -1,0 +1,20 @@
+generated: '2026-09-04'
+method: searched
+source: https://magnifi.ai/request-a-demo
+plan_count: 0
+pricing_url: null
+model: enterprise / contact-sales
+note: Magnifi publishes no pricing page, plan tiers, quotas or overage rates. The magnifi.ai sitemap carries
+  no /pricing or /plans URL; every commercial path on the site funnels to "Request a Demo", "Talk to Us"
+  or "Get in Touch". Partner API credentials (Access Key and Access Secret) are issued by a Magnifi representative,
+  so there is no self-serve tier at all. An honest zero, not an omission.
+evidence:
+- url: https://magnifi.ai/sitemap-0.xml
+  status: 200
+  note: 76 URLs, none of them a pricing or plans page.
+- url: https://magnifi.ai/request-a-demo
+  status: 200
+  note: Demo request form — the only commercial entry point.
+- url: https://magnifi.ai/contact-us
+  status: 200
+plans: []

@@ -1,0 +1,325 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.prod.videoverse.dev/
+api: Magnifi Partner Integration API
+format: vendor-json
+rfc9457: false
+note: Magnifi does NOT use RFC 9457 application/problem+json. It publishes its own error envelope and
+  a complete, named error-code table in the introduction of its partner documentation. Codes PA014 through
+  PA017 are absent from the provider's own table and are recorded here as unpublished rather than guessed.
+envelopes:
+- name: auth-error
+  when: Missing or invalid x-access-key / x-access-secret.
+  status: 401
+  shape:
+    message: string
+    error: string
+    statusCode: integer
+  example:
+    message: Invalid access key or access secret
+    error: Unauthorized
+    statusCode: 401
+- name: coded-error
+  when: Validation, permission, not-found and internal failures.
+  status: 4xx/5xx
+  shape:
+    statusCode: integer
+    error:
+      message: string
+      code: string (Magnifi error code)
+      metadata: object
+  example:
+    statusCode: 404
+    error:
+      message: Clip data not found
+      code: C001
+      metadata: {}
+code_field: error.code
+problem_type_count: 57
+problem_types:
+- code: I001
+  name: InternalServerError
+  group: Internal Errors
+  family: internal
+  message: Internal server error
+- code: I002
+  name: ServiceInteractionError
+  group: Internal Errors
+  family: internal
+  message: Service interaction failed
+- code: P001
+  name: PermissionDeniedEntityMismatch
+  group: Permission Errors
+  family: permission
+  message: 'Permission denied: Entity mismatch'
+- code: PA001
+  name: PartnerNotFound
+  group: Partner Errors
+  family: partner
+  message: Partner details not found
+- code: PA002
+  name: PartnerSchedulePublishFailed
+  group: Partner Errors
+  family: partner
+  message: Something unexpected happened while publishing partner schedule
+- code: PA003
+  name: PartnerStorageConfigNotFound
+  group: Partner Errors
+  family: partner
+  message: Partner storage config not found
+- code: PA004
+  name: PartnerConfigNotFound
+  group: Partner Errors
+  family: partner
+  message: Partner config not found
+- code: PA005
+  name: PartnerCategoriesNotFound
+  group: Partner Errors
+  family: partner
+  message: Partner categories not found
+- code: PA006
+  name: PartnerTemplateNotFound
+  group: Partner Errors
+  family: partner
+  message: Partner template not found
+- code: PA007
+  name: PartnerReserveChannelUnavailable
+  group: Partner Errors
+  family: partner
+  message: Reserve channel unavailable
+- code: PA008
+  name: PartnerClipMappingNotFound
+  group: Partner Errors
+  family: partner
+  message: Partner clip mapping not found
+- code: PA009
+  name: PartnerClipMappingAlreadyExists
+  group: Partner Errors
+  family: partner
+  message: Partner clip mapping already exists
+- code: PA010
+  name: PartnerCompiledClipMappingNotFound
+  group: Partner Errors
+  family: partner
+  message: Partner compiled clip mapping not found
+- code: PA011
+  name: PartnerCompiledClipMappingError
+  group: Partner Errors
+  family: partner
+  message: Error compiling partner clip mapping
+- code: PA012
+  name: PartnerNotifierSubscriptionNotFound
+  group: Partner Errors
+  family: partner
+  message: Partner notifier subscription not found
+- code: PA013
+  name: PartnerNotifierSubscriptionInactive
+  group: Partner Errors
+  family: partner
+  message: Partner notifier subscription is inactive
+- code: PA018
+  name: PartnerUserNotMemberOfEntity
+  group: Partner Errors
+  family: partner
+  message: Partner user is deactivated/removed from organization
+- code: PA019
+  name: PartnerUserNotFound
+  group: Partner Errors
+  family: partner
+  message: Partner user is deactivated/removed
+- code: S001
+  name: StreamDataNotFound
+  group: Stream Errors
+  family: stream
+  message: Stream data not found
+- code: S002
+  name: StreamURLValidationFailed
+  group: Stream Errors
+  family: stream
+  message: Stream URL validation failed
+- code: S003
+  name: StreamFireAtValidationFailed
+  group: Stream Errors
+  family: stream
+  message: Stream payload fireAt value can only be 'now' or a future timestamp
+- code: S004
+  name: StreamResourceClearanceFailed
+  group: Stream Errors
+  family: stream
+  message: Failed to mark status complete within 5 minutes of creation (MediaLive resource takes up to
+    5 minutes for channel creation)
+- code: S005
+  name: StreamTournamentIdIncorrect
+  group: Stream Errors
+  family: stream
+  message: Provided tournament ID is incorrect
+- code: S006
+  name: StreamTeamIdIncorrect
+  group: Stream Errors
+  family: stream
+  message: Provided team ID is incorrect
+- code: S007
+  name: StreamTeamNotInTournament
+  group: Stream Errors
+  family: stream
+  message: The specified team is not part of the tournament
+- code: S008
+  name: StreamTournamentCategoryMismatch
+  group: Stream Errors
+  family: stream
+  message: Tournament category does not match the specified category
+- code: S009
+  name: StreamAlreadyExists
+  group: Stream Errors
+  family: stream
+  message: Stream already exists for given matchScheduleId
+- code: S010
+  name: StreamUrlChangeNotAllowed
+  group: Stream Errors
+  family: stream
+  message: Updating the stream URL after creation is not allowed
+- code: S011
+  name: StreamFireTimeChangeNotAllowed
+  group: Stream Errors
+  family: stream
+  message: Updating the fireAt timestamp for a stream is not permitted
+- code: S012
+  name: StreamTemplateValidationFailed
+  group: Stream Errors
+  family: stream
+  message: The provided template data is invalid or does not meet required validation rules
+- code: S013
+  name: StreamTemplateChangeNotAllowed
+  group: Stream Errors
+  family: stream
+  message: Changing the template of an existing stream is not allowed
+- code: S014
+  name: StreamCategoryChangeNotAllowed
+  group: Stream Errors
+  family: stream
+  message: Updating the category of an existing stream is not permitted
+- code: S015
+  name: StreamRequiredFieldsMissing
+  group: Stream Errors
+  family: stream
+  message: One or more required fields for stream creation or update are missing
+- code: S016
+  name: InvalidStreamCustomFields
+  group: Stream Errors
+  family: stream
+  message: Provided custom fields are invalid or do not match the expected requirements
+- code: S017
+  name: StreamTitleValidationFailed
+  group: Stream Errors
+  family: stream
+  message: The provided stream title is invalid or fails validation rules
+- code: S018
+  name: StreamDatafeedConfigNotFound
+  group: Stream Errors
+  family: stream
+  message: Datafeed configuration for the stream could not be found
+- code: C001
+  name: ClipDataNotFound
+  group: Clip Errors
+  family: clip
+  message: Clip data not found
+- code: C002
+  name: ClipsDataForStreamNotFound
+  group: Clip Errors
+  family: clip
+  message: Clips data for stream not found
+- code: C003
+  name: ClipsDataForHighlightNotFound
+  group: Clip Errors
+  family: clip
+  message: Clips data for highlight not found
+- code: H001
+  name: HighlightDataNotFound
+  group: Highlight Errors
+  family: highlight
+  message: Highlight data not found
+- code: M001
+  name: MetadataSchemaLoadError
+  group: Metadata Errors
+  family: metadata
+  message: Metadata Schema not found or faulty
+- code: M002
+  name: MetadataValidationFailed
+  group: Metadata Errors
+  family: metadata
+  message: 'Metadata Validation failed: Missing or Incorrect fields'
+- code: M003
+  name: MetadataDefaultMappingAlreadyExists
+  group: Metadata Errors
+  family: metadata
+  message: Metadata default mapping already exists
+- code: M004
+  name: MetadataDefaultMappingNotFound
+  group: Metadata Errors
+  family: metadata
+  message: Metadata default mapping not found
+- code: MS001
+  name: MatchDataNotFound
+  group: Match Schedule Errors
+  family: match-schedule
+  message: Match data not found
+- code: MS002
+  name: MatchTeamIdIncorrect
+  group: Match Schedule Errors
+  family: match-schedule
+  message: Provided team ID is incorrect
+- code: MS003
+  name: MatchTournamentIdIncorrect
+  group: Match Schedule Errors
+  family: match-schedule
+  message: Provided tournament ID is incorrect
+- code: MS004
+  name: MatchCategoryIncorrect
+  group: Match Schedule Errors
+  family: match-schedule
+  message: Provided match category is incorrect
+- code: MS005
+  name: MatchTournamentCategoryMismatch
+  group: Match Schedule Errors
+  family: match-schedule
+  message: Tournament category does not match the specified category
+- code: MS006
+  name: MatchTeamNotInTournament
+  group: Match Schedule Errors
+  family: match-schedule
+  message: The specified team is not part of the tournament
+- code: MS007
+  name: MatchScheduleExternalIdAlreadyExists
+  group: Match Schedule Errors
+  family: match-schedule
+  message: Match schedule external ID already exists
+- code: D001
+  name: DuplicateEntryFound
+  group: Other Errors
+  family: data
+  message: Duplicate Entry Found
+- code: D002
+  name: DataNotFound
+  group: Other Errors
+  family: data
+  message: Data not found
+- code: D003
+  name: PaginationOutOfRange
+  group: Other Errors
+  family: data
+  message: Pagination out of range
+- code: V001
+  name: VideoUrlNotFound
+  group: Other Errors
+  family: video
+  message: Video url not found
+- code: V002
+  name: ThumbnailUrlNotFound
+  group: Other Errors
+  family: video
+  message: Thumbnail url not found
+- code: V003
+  name: PresignedUrlFetchError
+  group: Other Errors
+  family: video
+  message: Error fetching presigned url

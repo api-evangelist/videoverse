@@ -1,0 +1,431 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/videoverse-magnifi-partner-openapi.yml
+status: candidate
+note: VideoVerse / Magnifi ships NO MCP server. Searched the partner documentation, magnifi.ai, vverse.ai,
+  the company GitHub organization and npm; nothing hosted, nothing installable. The tools below are a
+  CANDIDATE list derived one-for-one from the operations in the derived OpenAPI so the surface can be
+  reasoned about — they are not a product and no endpoint exists to call.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: api-key
+  verified: derived
+  note: 'mode: none — nobody ships a server. Auth is recorded as api-key because that is what the underlying
+    API requires (x-access-key / x-access-secret), not because an MCP server negotiates it.'
+probes:
+- url: https://api.magnifi.ai/mcp
+  status: 404
+  note: POST tools/list — JSON not-found envelope
+- url: https://mcp.magnifi.ai/
+  status: 0
+  note: DNS does not resolve
+- url: https://magnifi.ai/mcp
+  status: 404
+- url: https://magnifi.ai/llms.txt
+  status: 404
+- url: https://vverse.ai/llms.txt
+  status: 404
+tool_count: 57
+tools:
+- name: getPartnerDetails
+  category: Partner
+  description: Get Partner Details
+  rest:
+    method: GET
+    path: /v1/partner/details
+    operationId: getPartnerDetails
+- name: getPartnerCategories
+  category: Partner
+  description: Get Partner Categories
+  rest:
+    method: GET
+    path: /v1/partner/categories
+    operationId: getPartnerCategories
+- name: getPartnerTemplates
+  category: Partner
+  description: Get Partner Templates
+  rest:
+    method: GET
+    path: /v1/partner/templates
+    operationId: getPartnerTemplates
+- name: getPartnerWorkspaces
+  category: Partner
+  description: Get Partner Workspaces
+  rest:
+    method: GET
+    path: /v1/partner/workspaces
+    operationId: getPartnerWorkspaces
+- name: getPartnerStreamCustomFields
+  category: Partner
+  description: Get Partner Stream Custom Fields
+  rest:
+    method: GET
+    path: /v1/partner/stream-fields
+    operationId: getPartnerStreamCustomFields
+- name: getPartnerClipNamingTemplates
+  category: Partner
+  description: Get Partner Clip Naming Templates
+  rest:
+    method: GET
+    path: /v1/partner/clip-naming-templates
+    operationId: getPartnerClipNamingTemplates
+- name: getPartnerStorageBuckets
+  category: Partner
+  description: Get Partner Storage Buckets
+  rest:
+    method: GET
+    path: /v1/partner/storage-buckets
+    operationId: getPartnerStorageBuckets
+- name: getPartnerLanguages
+  category: Partner
+  description: Get Partner Languages
+  rest:
+    method: GET
+    path: /v1/partner/languages
+    operationId: getPartnerLanguages
+- name: getPartnerTemplateAudioOptions
+  category: Partner
+  description: Get Partner Template Audio Options
+  rest:
+    method: GET
+    path: /v1/partner/audio-options
+    operationId: getPartnerTemplateAudioOptions
+- name: generatePreSignedUrl
+  category: Partner
+  description: Generate Pre-signed Url (to be deprecated)
+  rest:
+    method: POST
+    path: /v1/partner/getPreSignedUrl
+    operationId: generatePreSignedUrl
+- name: createStream
+  category: Streams
+  description: Create stream
+  rest:
+    method: POST
+    path: /v1/stream
+    operationId: createStream
+- name: getAllStreams
+  category: Streams
+  description: Get all streams
+  rest:
+    method: GET
+    path: /v1/stream
+    operationId: getAllStreams
+- name: updateStreamByStreamId
+  category: Streams
+  description: Update stream by streamId
+  rest:
+    method: PATCH
+    path: /v1/stream/{streamId}
+    operationId: updateStreamByStreamId
+- name: getStreamByStreamId
+  category: Streams
+  description: Get stream by streamId
+  rest:
+    method: GET
+    path: /v1/stream/{streamId}
+    operationId: getStreamByStreamId
+- name: getClipsByStreamId
+  category: Streams
+  description: Get clips by streamId
+  rest:
+    method: GET
+    path: /v1/stream/{streamId}/clips
+    operationId: getClipsByStreamId
+- name: getHlClipsByStreamId
+  category: Streams
+  description: Get hlClips by streamId
+  rest:
+    method: GET
+    path: /v1/stream/{streamId}/hlclips
+    operationId: getHlClipsByStreamId
+- name: getHighlightsByStreamId
+  category: Streams
+  description: Get highlights by streamId
+  rest:
+    method: GET
+    path: /v1/stream/{streamId}/highlights
+    operationId: getHighlightsByStreamId
+- name: getFiltersByStreamId
+  category: Streams
+  description: Get filters by streamId
+  rest:
+    method: GET
+    path: /v1/stream/{streamId}/filters
+    operationId: getFiltersByStreamId
+- name: getMatchVideosByStreamId
+  category: Streams
+  description: Get Match Videos by streamId
+  rest:
+    method: GET
+    path: /v1/stream/{streamId}/match-videos
+    operationId: getMatchVideosByStreamId
+- name: getByClipId
+  category: Clips
+  description: Get by clipId
+  rest:
+    method: GET
+    path: /v1/clip/{clipId}
+    operationId: getByClipId
+- name: getHighlightByHighlightId
+  category: Highlights
+  description: Get Highlight by highlightId
+  rest:
+    method: GET
+    path: /v1/highlight/{highlightId}
+    operationId: getHighlightByHighlightId
+- name: getHlClipByHlclipId
+  category: Highlight Clips
+  description: Get hlClip by hlclipId
+  rest:
+    method: GET
+    path: /v1/hlclip/{hlclipId}
+    operationId: getHlClipByHlclipId
+- name: getMatchVideoByMatchVideoId
+  category: Match Video
+  description: Get match video by matchVideoId
+  rest:
+    method: GET
+    path: /v1/match-video/{matchVideoId}
+    operationId: getMatchVideoByMatchVideoId
+- name: getAllMatchVideos
+  category: Match Video
+  description: Get all match videos
+  rest:
+    method: GET
+    path: /v1/match-video
+    operationId: getAllMatchVideos
+- name: fetchPresignedUrl
+  category: Content
+  description: Fetch Presigned Url
+  rest:
+    method: POST
+    path: /v1/content/presigned-url
+    operationId: fetchPresignedUrl
+- name: addPlayer
+  category: Player
+  description: Add player
+  rest:
+    method: POST
+    path: /v1/partner/player
+    operationId: addPlayer
+- name: getAllPlayers
+  category: Player
+  description: Get all players
+  rest:
+    method: GET
+    path: /v1/partner/player
+    operationId: getAllPlayers
+- name: updatePlayerByPlayerId
+  category: Player
+  description: Update player by playerId
+  rest:
+    method: PUT
+    path: /v1/partner/player/{playerId}
+    operationId: updatePlayerByPlayerId
+- name: getPlayerByPlayerId
+  category: Player
+  description: Get player by playerId
+  rest:
+    method: GET
+    path: /v1/partner/player/{playerId}
+    operationId: getPlayerByPlayerId
+- name: addTeam
+  category: Team
+  description: Add team
+  rest:
+    method: POST
+    path: /v1/partner/team
+    operationId: addTeam
+- name: getAllTeams
+  category: Team
+  description: Get all teams
+  rest:
+    method: GET
+    path: /v1/partner/team
+    operationId: getAllTeams
+- name: updateTeamByTeamId
+  category: Team
+  description: Update team by teamId
+  rest:
+    method: PUT
+    path: /v1/partner/team/{teamId}
+    operationId: updateTeamByTeamId
+- name: getTeamByTeamId
+  category: Team
+  description: Get team by teamId
+  rest:
+    method: GET
+    path: /v1/partner/team/{teamId}
+    operationId: getTeamByTeamId
+- name: addTournament
+  category: Tournament
+  description: Add tournament
+  rest:
+    method: POST
+    path: /v1/partner/tournament
+    operationId: addTournament
+- name: getAllTournaments
+  category: Tournament
+  description: Get all tournaments
+  rest:
+    method: GET
+    path: /v1/partner/tournament
+    operationId: getAllTournaments
+- name: updateTournamentByTournamentId
+  category: Tournament
+  description: Update tournament by tournamentId
+  rest:
+    method: PUT
+    path: /v1/partner/tournament/{tournamentId}
+    operationId: updateTournamentByTournamentId
+- name: getTournamentByTournamentId
+  category: Tournament
+  description: Get tournament by tournamentId
+  rest:
+    method: GET
+    path: /v1/partner/tournament/{tournamentId}
+    operationId: getTournamentByTournamentId
+- name: createMatchSchedule
+  category: Match Schedule
+  description: Create match schedule
+  rest:
+    method: POST
+    path: /v1/match-schedule
+    operationId: createMatchSchedule
+- name: getAllMatchSchedules
+  category: Match Schedule
+  description: Get all match schedules
+  rest:
+    method: GET
+    path: /v1/match-schedule
+    operationId: getAllMatchSchedules
+- name: updateMatchScheduleByMatchScheduleId
+  category: Match Schedule
+  description: Update match schedule by matchScheduleId
+  rest:
+    method: PATCH
+    path: /v1/match-schedule/{matchScheduleId}
+    operationId: updateMatchScheduleByMatchScheduleId
+- name: getMatchScheduleByMatchScheduleId
+  category: Match Schedule
+  description: Get match schedule by matchScheduleId
+  rest:
+    method: GET
+    path: /v1/match-schedule/{matchScheduleId}
+    operationId: getMatchScheduleByMatchScheduleId
+- name: deleteMatchScheduleByMatchScheduleId
+  category: Match Schedule
+  description: Delete match schedule by matchScheduleId
+  rest:
+    method: DELETE
+    path: /v1/match-schedule/{matchScheduleId}
+    operationId: deleteMatchScheduleByMatchScheduleId
+- name: deLinkByMatchScheduleId
+  category: Match Schedule
+  description: De-link by matchScheduleId
+  rest:
+    method: POST
+    path: /v1/match-schedule/{matchScheduleId}/de-link
+    operationId: deLinkByMatchScheduleId
+- name: invokeStreamByMatchScheduleId
+  category: Match Schedule
+  description: Invoke stream by matchScheduleId
+  rest:
+    method: POST
+    path: /v1/match-schedule/{matchScheduleId}/invoke-stream
+    operationId: invokeStreamByMatchScheduleId
+- name: getCatchMeUpHighlight
+  category: Catch me up
+  description: Get Catch me up Highlight
+  rest:
+    method: GET
+    path: /v1/catch-me-up/highlight
+    operationId: getCatchMeUpHighlight
+- name: fetchTopics
+  category: Webhook
+  description: Fetch Topics
+  rest:
+    method: GET
+    path: /v1/webhook/notifier/topics
+    operationId: fetchTopics
+- name: createSubscription
+  category: Webhook
+  description: Create Subscription
+  rest:
+    method: POST
+    path: /v1/webhook/notifier/subscription
+    operationId: createSubscription
+- name: updateSubscription
+  category: Webhook
+  description: Update Subscription
+  rest:
+    method: PATCH
+    path: /v1/webhook/notifier/subscription/{subscriptionId}
+    operationId: updateSubscription
+- name: getSubscriptionBySubscriptionId
+  category: Webhook
+  description: Get Subscription by subscriptionId
+  rest:
+    method: GET
+    path: /v1/webhook/notifier/subscription/{subscriptionId}
+    operationId: getSubscriptionBySubscriptionId
+- name: deleteSubscription
+  category: Webhook
+  description: Delete Subscription
+  rest:
+    method: DELETE
+    path: /v1/webhook/notifier/subscription/{subscriptionId}
+    operationId: deleteSubscription
+- name: getSubscriptions
+  category: Webhook
+  description: Get Subscriptions
+  rest:
+    method: GET
+    path: /v1/webhook/notifier/subscriptions
+    operationId: getSubscriptions
+- name: createEntityMember
+  category: Entity Member
+  description: Create Entity Member
+  rest:
+    method: POST
+    path: /v1/entity-member
+    operationId: createEntityMember
+- name: getEntityMembers
+  category: Entity Member
+  description: Get Entity Members
+  rest:
+    method: GET
+    path: /v1/entity-member
+    operationId: getEntityMembers
+- name: assignRoleToUser
+  category: Entity Member
+  description: Assign Role to User
+  rest:
+    method: POST
+    path: /v1/entity-member/assign
+    operationId: assignRoleToUser
+- name: getAssignableUsers
+  category: Entity Member
+  description: Get Assignable Users
+  rest:
+    method: GET
+    path: /v1/user/assignable
+    operationId: getAssignableUsers
+- name: updateEntityMemberRole
+  category: Entity Member
+  description: Update Entity Member Role
+  rest:
+    method: PUT
+    path: /v1/entity-member/{entityMemberId}
+    operationId: updateEntityMemberRole
+- name: removeEntityMember
+  category: Entity Member
+  description: Remove Entity Member
+  rest:
+    method: DELETE
+    path: /v1/entity-member/{entityMemberId}
+    operationId: removeEntityMember

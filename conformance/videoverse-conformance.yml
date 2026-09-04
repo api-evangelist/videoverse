@@ -1,0 +1,89 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/videoverse-magnifi-partner-openapi.yml + https://docs.prod.videoverse.dev/
+note: Assertions are made only where the contract or the documentation states them. A false entry means
+  we checked and the provider does not do it — not that it should.
+conformance:
+- id: openapi
+  conforms: false
+  evidence: The provider publishes a Postman collection, not an OpenAPI. The OpenAPI in openapi/ is derived
+    by API Evangelist from that collection and is not a first-party artifact.
+- id: oauth2
+  conforms: false
+  evidence: Authentication is a two-part static API key (x-access-key / x-access-secret). No OAuth 2.0
+    flow, token endpoint or authorization server is documented; /.well-known/oauth-authorization-server
+    404s on every host.
+- id: oidc
+  conforms: false
+  evidence: /.well-known/openid-configuration returned 404 on vverse.ai, www.vverse.ai, magnifi.ai, www.magnifi.ai,
+    api.magnifi.ai and docs.prod.videoverse.dev.
+- id: rfc9457
+  conforms: false
+  evidence: Errors are a vendor envelope ({statusCode, error:{message, code, metadata}}); no application/problem+json
+    media type appears anywhere in the collection.
+- id: rfc8594
+  conforms: false
+  evidence: No Sunset or Deprecation response header is documented, even for the operation the provider
+    itself marks "[TO BE DEPRECATED]".
+- id: pagination
+  conforms: true
+  evidence: https://docs.prod.videoverse.dev/ — page / pageSize query parameters with currentPage, pageSize,
+    totalItems, totalPages in the response envelope across the list endpoints.
+- id: idempotency
+  conforms: false
+  evidence: 'No idempotency key or replay-safety mechanism across 16 mutating operations. See conventions/videoverse-conventions.yml
+    idempotency.coverage: none.'
+- id: webhook-hmac
+  conforms: true
+  evidence: https://docs.prod.videoverse.dev/ — HMAC-SHA256 over the raw request body, delivered in the
+    x-magnifi-signature header, on both the metadata-delivery and notifier webhook surfaces.
+- id: json:api
+  conforms: false
+  evidence: Custom response envelope; no JSON:API media type or document structure.
+- id: graphql
+  conforms: false
+  evidence: POST https://api.magnifi.ai/graphql returned HTTP 404 with the API's JSON not-found envelope;
+    no GraphQL surface is documented.
+- id: asyncapi
+  conforms: false
+  evidence: An event surface exists (two webhook mechanisms) but no AsyncAPI document is published. Captured
+    as a webhook catalog in asyncapi/videoverse-magnifi-webhooks.yml.
+- id: iso-27001
+  conforms: true
+  evidence: https://magnifi.ai/faqs and the site-wide footer display an ISO 27001 compliance badge. Certificate
+    number and certifying body are not published.
+- id: iso-27701
+  conforms: true
+  evidence: https://magnifi.ai/faqs and the site-wide footer display an ISO 27701 (privacy information
+    management) compliance badge.
+- id: iso-9001
+  conforms: true
+  evidence: https://magnifi.ai/faqs and the site-wide footer display an ISO 9001 compliance badge.
+- id: gdpr
+  conforms: true
+  evidence: https://magnifi.ai/data-processing-agreement publishes a GDPR Data Processing Agreement; a
+    GDPR badge appears in the site-wide footer.
+- id: soc2
+  conforms: false
+  evidence: No SOC 2 claim appears on any VideoVerse or Magnifi page fetched in this pass.
+domain_standard:
+  checked:
+  - SCIM
+  - OData
+  - OpenRTB
+  - ActivityPub
+  - OAI-PMH
+  - HL7v2
+  - X12
+  - ISO 20022
+  - EBU/SMPTE identifiers
+  - MRSS
+  - SCTE-35
+  - EIDR
+  - DASH-IF / HLS manifest exchange
+  declared: null
+  note: 'REWARD-ONLY, and nothing to reward here honestly. Sports/broadcast video metadata does have interchange
+    standards (SMPTE, EBUCore, SCTE-35, MRSS), but the Magnifi contract declares none of them: clip and
+    highlight metadata is a proprietary JSON shape with partner-defined custom fields, ingest is named
+    by transport (HLS, RTMP, SRT, MP4) rather than by a metadata standard, and no standard URN, namespace
+    or schema identifier appears in any request or response example. Recorded as absent, not invented.'

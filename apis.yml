@@ -27,8 +27,8 @@ tags:
 - Video Editing
 - Highlights
 - Content Creation
-- Machine Learning
-- Webhooks
+- Machine-Learning
+- Webhook
 tags_raw:
 - video
 - artificial-intelligence
@@ -41,39 +41,19 @@ tags_raw:
 - machine-learning
 - webhooks
 apis:
-- name: Magnifi Partner Integration API
-  description: >-
-    Partner REST API for Magnifi by VideoVerse. Partners authenticate with an Access Key and Access
-    Secret pair (x-access-key / x-access-secret headers) and use the API to ingest live or recorded
-    streams (HLS, RTMP, SRT, MP4), read the AI-generated clips, highlights and highlight clips
-    produced from them, export match videos, manage tournament / team / player rosters and match
-    schedules, fetch pre-signed content URLs, manage entity members, and subscribe to change
-    notifications over webhooks. The base URL is issued to each partner with their credentials and
-    is not published, so the contract carries it as the templated server {PARTNER_BASE_URL}.
+- aid: videoverse:videoverse-catch-me-up-api
+  name: VideoVerse Catch me up API
+  description: The Catch me up API from VideoVerse — 1 operation(s) for catch me up.
   humanURL: https://docs.prod.videoverse.dev/
-  image: https://wp-dashboard.magnifi.ai/wp-content/uploads/2024/08/image.png
-  position: Producing
   tags:
-  - Video
-  - Artificial Intelligence
-  - Sports
-  - Broadcasting
-  - Highlights
-  - Webhooks
-  tags_raw:
-  - video
-  - artificial-intelligence
-  - sports
-  - broadcasting
-  - highlights
-  - webhooks
+  - Catch me up
   properties:
+  - type: OpenAPI
+    url: openapi/videoverse-catch-me-up-api-openapi.yml
   - type: Documentation
     url: https://docs.prod.videoverse.dev/
   - type: APIReference
     url: https://docs.prod.videoverse.dev/
-  - type: OpenAPI
-    url: openapi/videoverse-magnifi-partner-openapi.yml
   - type: Postman
     url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
   - type: PostmanCollection
@@ -88,22 +68,451 @@ apis:
     url: data-model/videoverse-data-model.yml
   - type: Webhooks
     url: asyncapi/videoverse-magnifi-webhooks.yml
-  - type: Overlay
-    url: overlays/videoverse-magnifi-partner-overlay.yaml
   - type: Lifecycle
     url: lifecycle/videoverse-lifecycle.yml
   - type: RateLimits
     url: rate-limits/videoverse-rate-limits.yml
   - type: X-MCPServerCandidate
     url: mcp/videoverse-mcp.yml
-  - type: AgentSkill
-    url: skills/_index.yml
+- aid: videoverse:videoverse-clips-api
+  name: VideoVerse Clips API
+  description: The Clips API from VideoVerse — 1 operation(s) for clips.
+  humanURL: https://docs.prod.videoverse.dev/
+  tags:
+  - Clips
+  properties:
+  - type: OpenAPI
+    url: openapi/videoverse-clips-api-openapi.yml
+  - type: Documentation
+    url: https://docs.prod.videoverse.dev/
+  - type: APIReference
+    url: https://docs.prod.videoverse.dev/
+  - type: Postman
+    url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+  - type: PostmanCollection
+    url: postman/videoverse-magnifi-partner-integration.postman_collection.json
+  - type: Authentication
+    url: authentication/videoverse-authentication.yml
+  - type: Conventions
+    url: conventions/videoverse-conventions.yml
+  - type: ErrorCatalog
+    url: errors/videoverse-problem-types.yml
+  - type: DataModel
+    url: data-model/videoverse-data-model.yml
+  - type: Webhooks
+    url: asyncapi/videoverse-magnifi-webhooks.yml
+  - type: Lifecycle
+    url: lifecycle/videoverse-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/videoverse-rate-limits.yml
+  - type: X-MCPServerCandidate
+    url: mcp/videoverse-mcp.yml
+- aid: videoverse:videoverse-content-api
+  name: VideoVerse Content API
+  description: The Content API from VideoVerse — 1 operation(s) for content.
+  humanURL: https://docs.prod.videoverse.dev/
+  tags:
+  - Content
+  properties:
+  - type: OpenAPI
+    url: openapi/videoverse-content-api-openapi.yml
+  - type: Documentation
+    url: https://docs.prod.videoverse.dev/
+  - type: APIReference
+    url: https://docs.prod.videoverse.dev/
+  - type: Postman
+    url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+  - type: PostmanCollection
+    url: postman/videoverse-magnifi-partner-integration.postman_collection.json
+  - type: Authentication
+    url: authentication/videoverse-authentication.yml
+  - type: Conventions
+    url: conventions/videoverse-conventions.yml
+  - type: ErrorCatalog
+    url: errors/videoverse-problem-types.yml
+  - type: DataModel
+    url: data-model/videoverse-data-model.yml
+  - type: Webhooks
+    url: asyncapi/videoverse-magnifi-webhooks.yml
+  - type: Lifecycle
+    url: lifecycle/videoverse-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/videoverse-rate-limits.yml
+  - type: X-MCPServerCandidate
+    url: mcp/videoverse-mcp.yml
+- aid: videoverse:videoverse-entity-member-api
+  name: VideoVerse Entity Member API
+  description: The Entity Member API from VideoVerse — 4 operation(s) for entity member.
+  humanURL: https://docs.prod.videoverse.dev/
+  tags:
+  - Entity Member
+  properties:
+  - type: OpenAPI
+    url: openapi/videoverse-entity-member-api-openapi.yml
+  - type: Documentation
+    url: https://docs.prod.videoverse.dev/
+  - type: APIReference
+    url: https://docs.prod.videoverse.dev/
+  - type: Postman
+    url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+  - type: PostmanCollection
+    url: postman/videoverse-magnifi-partner-integration.postman_collection.json
+  - type: Authentication
+    url: authentication/videoverse-authentication.yml
+  - type: Conventions
+    url: conventions/videoverse-conventions.yml
+  - type: ErrorCatalog
+    url: errors/videoverse-problem-types.yml
+  - type: DataModel
+    url: data-model/videoverse-data-model.yml
+  - type: Webhooks
+    url: asyncapi/videoverse-magnifi-webhooks.yml
+  - type: Lifecycle
+    url: lifecycle/videoverse-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/videoverse-rate-limits.yml
+  - type: X-MCPServerCandidate
+    url: mcp/videoverse-mcp.yml
+- aid: videoverse:videoverse-highlight-clips-api
+  name: VideoVerse Highlight Clips API
+  description: The Highlight Clips API from VideoVerse — 1 operation(s) for highlight clips.
+  humanURL: https://docs.prod.videoverse.dev/
+  tags:
+  - Highlight Clips
+  properties:
+  - type: OpenAPI
+    url: openapi/videoverse-highlight-clips-api-openapi.yml
+  - type: Documentation
+    url: https://docs.prod.videoverse.dev/
+  - type: APIReference
+    url: https://docs.prod.videoverse.dev/
+  - type: Postman
+    url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+  - type: PostmanCollection
+    url: postman/videoverse-magnifi-partner-integration.postman_collection.json
+  - type: Authentication
+    url: authentication/videoverse-authentication.yml
+  - type: Conventions
+    url: conventions/videoverse-conventions.yml
+  - type: ErrorCatalog
+    url: errors/videoverse-problem-types.yml
+  - type: DataModel
+    url: data-model/videoverse-data-model.yml
+  - type: Webhooks
+    url: asyncapi/videoverse-magnifi-webhooks.yml
+  - type: Lifecycle
+    url: lifecycle/videoverse-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/videoverse-rate-limits.yml
+  - type: X-MCPServerCandidate
+    url: mcp/videoverse-mcp.yml
+- aid: videoverse:videoverse-highlights-api
+  name: VideoVerse Highlights API
+  description: The Highlights API from VideoVerse — 1 operation(s) for highlights.
+  humanURL: https://docs.prod.videoverse.dev/
+  tags:
+  - Highlights
+  properties:
+  - type: OpenAPI
+    url: openapi/videoverse-highlights-api-openapi.yml
+  - type: Documentation
+    url: https://docs.prod.videoverse.dev/
+  - type: APIReference
+    url: https://docs.prod.videoverse.dev/
+  - type: Postman
+    url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+  - type: PostmanCollection
+    url: postman/videoverse-magnifi-partner-integration.postman_collection.json
+  - type: Authentication
+    url: authentication/videoverse-authentication.yml
+  - type: Conventions
+    url: conventions/videoverse-conventions.yml
+  - type: ErrorCatalog
+    url: errors/videoverse-problem-types.yml
+  - type: DataModel
+    url: data-model/videoverse-data-model.yml
+  - type: Webhooks
+    url: asyncapi/videoverse-magnifi-webhooks.yml
+  - type: Lifecycle
+    url: lifecycle/videoverse-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/videoverse-rate-limits.yml
+  - type: X-MCPServerCandidate
+    url: mcp/videoverse-mcp.yml
+- aid: videoverse:videoverse-match-schedule-api
+  name: VideoVerse Match Schedule API
+  description: The Match Schedule API from VideoVerse — 4 operation(s) for match schedule.
+  humanURL: https://docs.prod.videoverse.dev/
+  tags:
+  - Match Schedule
+  properties:
+  - type: OpenAPI
+    url: openapi/videoverse-match-schedule-api-openapi.yml
+  - type: Documentation
+    url: https://docs.prod.videoverse.dev/
+  - type: APIReference
+    url: https://docs.prod.videoverse.dev/
+  - type: Postman
+    url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+  - type: PostmanCollection
+    url: postman/videoverse-magnifi-partner-integration.postman_collection.json
+  - type: Authentication
+    url: authentication/videoverse-authentication.yml
+  - type: Conventions
+    url: conventions/videoverse-conventions.yml
+  - type: ErrorCatalog
+    url: errors/videoverse-problem-types.yml
+  - type: DataModel
+    url: data-model/videoverse-data-model.yml
+  - type: Webhooks
+    url: asyncapi/videoverse-magnifi-webhooks.yml
+  - type: Lifecycle
+    url: lifecycle/videoverse-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/videoverse-rate-limits.yml
+  - type: X-MCPServerCandidate
+    url: mcp/videoverse-mcp.yml
+- aid: videoverse:videoverse-match-video-api
+  name: VideoVerse Match Video API
+  description: The Match Video API from VideoVerse — 2 operation(s) for match video.
+  humanURL: https://docs.prod.videoverse.dev/
+  tags:
+  - Match Video
+  properties:
+  - type: OpenAPI
+    url: openapi/videoverse-match-video-api-openapi.yml
+  - type: Documentation
+    url: https://docs.prod.videoverse.dev/
+  - type: APIReference
+    url: https://docs.prod.videoverse.dev/
+  - type: Postman
+    url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+  - type: PostmanCollection
+    url: postman/videoverse-magnifi-partner-integration.postman_collection.json
+  - type: Authentication
+    url: authentication/videoverse-authentication.yml
+  - type: Conventions
+    url: conventions/videoverse-conventions.yml
+  - type: ErrorCatalog
+    url: errors/videoverse-problem-types.yml
+  - type: DataModel
+    url: data-model/videoverse-data-model.yml
+  - type: Webhooks
+    url: asyncapi/videoverse-magnifi-webhooks.yml
+  - type: Lifecycle
+    url: lifecycle/videoverse-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/videoverse-rate-limits.yml
+  - type: X-MCPServerCandidate
+    url: mcp/videoverse-mcp.yml
+- aid: videoverse:videoverse-partner-api
+  name: VideoVerse Partner API
+  description: The Partner API from VideoVerse — 10 operation(s) for partner.
+  humanURL: https://docs.prod.videoverse.dev/
+  tags:
+  - Partner
+  properties:
+  - type: OpenAPI
+    url: openapi/videoverse-partner-api-openapi.yml
+  - type: Documentation
+    url: https://docs.prod.videoverse.dev/
+  - type: APIReference
+    url: https://docs.prod.videoverse.dev/
+  - type: Postman
+    url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+  - type: PostmanCollection
+    url: postman/videoverse-magnifi-partner-integration.postman_collection.json
+  - type: Authentication
+    url: authentication/videoverse-authentication.yml
+  - type: Conventions
+    url: conventions/videoverse-conventions.yml
+  - type: ErrorCatalog
+    url: errors/videoverse-problem-types.yml
+  - type: DataModel
+    url: data-model/videoverse-data-model.yml
+  - type: Webhooks
+    url: asyncapi/videoverse-magnifi-webhooks.yml
+  - type: Lifecycle
+    url: lifecycle/videoverse-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/videoverse-rate-limits.yml
+  - type: X-MCPServerCandidate
+    url: mcp/videoverse-mcp.yml
+- aid: videoverse:videoverse-player-api
+  name: VideoVerse Player API
+  description: The Player API from VideoVerse — 2 operation(s) for player.
+  humanURL: https://docs.prod.videoverse.dev/
+  tags:
+  - Player
+  properties:
+  - type: OpenAPI
+    url: openapi/videoverse-player-api-openapi.yml
+  - type: Documentation
+    url: https://docs.prod.videoverse.dev/
+  - type: APIReference
+    url: https://docs.prod.videoverse.dev/
+  - type: Postman
+    url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+  - type: PostmanCollection
+    url: postman/videoverse-magnifi-partner-integration.postman_collection.json
+  - type: Authentication
+    url: authentication/videoverse-authentication.yml
+  - type: Conventions
+    url: conventions/videoverse-conventions.yml
+  - type: ErrorCatalog
+    url: errors/videoverse-problem-types.yml
+  - type: DataModel
+    url: data-model/videoverse-data-model.yml
+  - type: Webhooks
+    url: asyncapi/videoverse-magnifi-webhooks.yml
+  - type: Lifecycle
+    url: lifecycle/videoverse-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/videoverse-rate-limits.yml
+  - type: X-MCPServerCandidate
+    url: mcp/videoverse-mcp.yml
+- aid: videoverse:videoverse-streams-api
+  name: VideoVerse Streams API
+  description: The Streams API from VideoVerse — 7 operation(s) for streams.
+  humanURL: https://docs.prod.videoverse.dev/
+  tags:
+  - Streams
+  properties:
+  - type: OpenAPI
+    url: openapi/videoverse-streams-api-openapi.yml
+  - type: Documentation
+    url: https://docs.prod.videoverse.dev/
+  - type: APIReference
+    url: https://docs.prod.videoverse.dev/
+  - type: Postman
+    url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+  - type: PostmanCollection
+    url: postman/videoverse-magnifi-partner-integration.postman_collection.json
+  - type: Authentication
+    url: authentication/videoverse-authentication.yml
+  - type: Conventions
+    url: conventions/videoverse-conventions.yml
+  - type: ErrorCatalog
+    url: errors/videoverse-problem-types.yml
+  - type: DataModel
+    url: data-model/videoverse-data-model.yml
+  - type: Webhooks
+    url: asyncapi/videoverse-magnifi-webhooks.yml
+  - type: Lifecycle
+    url: lifecycle/videoverse-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/videoverse-rate-limits.yml
+  - type: X-MCPServerCandidate
+    url: mcp/videoverse-mcp.yml
+- aid: videoverse:videoverse-team-api
+  name: VideoVerse Team API
+  description: The Team API from VideoVerse — 2 operation(s) for team.
+  humanURL: https://docs.prod.videoverse.dev/
+  tags:
+  - Team
+  properties:
+  - type: OpenAPI
+    url: openapi/videoverse-team-api-openapi.yml
+  - type: Documentation
+    url: https://docs.prod.videoverse.dev/
+  - type: APIReference
+    url: https://docs.prod.videoverse.dev/
+  - type: Postman
+    url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+  - type: PostmanCollection
+    url: postman/videoverse-magnifi-partner-integration.postman_collection.json
+  - type: Authentication
+    url: authentication/videoverse-authentication.yml
+  - type: Conventions
+    url: conventions/videoverse-conventions.yml
+  - type: ErrorCatalog
+    url: errors/videoverse-problem-types.yml
+  - type: DataModel
+    url: data-model/videoverse-data-model.yml
+  - type: Webhooks
+    url: asyncapi/videoverse-magnifi-webhooks.yml
+  - type: Lifecycle
+    url: lifecycle/videoverse-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/videoverse-rate-limits.yml
+  - type: X-MCPServerCandidate
+    url: mcp/videoverse-mcp.yml
+- aid: videoverse:videoverse-tournament-api
+  name: VideoVerse Tournament API
+  description: The Tournament API from VideoVerse — 2 operation(s) for tournament.
+  humanURL: https://docs.prod.videoverse.dev/
+  tags:
+  - Tournament
+  properties:
+  - type: OpenAPI
+    url: openapi/videoverse-tournament-api-openapi.yml
+  - type: Documentation
+    url: https://docs.prod.videoverse.dev/
+  - type: APIReference
+    url: https://docs.prod.videoverse.dev/
+  - type: Postman
+    url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+  - type: PostmanCollection
+    url: postman/videoverse-magnifi-partner-integration.postman_collection.json
+  - type: Authentication
+    url: authentication/videoverse-authentication.yml
+  - type: Conventions
+    url: conventions/videoverse-conventions.yml
+  - type: ErrorCatalog
+    url: errors/videoverse-problem-types.yml
+  - type: DataModel
+    url: data-model/videoverse-data-model.yml
+  - type: Webhooks
+    url: asyncapi/videoverse-magnifi-webhooks.yml
+  - type: Lifecycle
+    url: lifecycle/videoverse-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/videoverse-rate-limits.yml
+  - type: X-MCPServerCandidate
+    url: mcp/videoverse-mcp.yml
+- aid: videoverse:videoverse-webhook-api
+  name: VideoVerse Webhook API
+  description: The Webhook API from VideoVerse — 4 operation(s) for webhook.
+  humanURL: https://docs.prod.videoverse.dev/
+  tags:
+  - Webhook
+  properties:
+  - type: OpenAPI
+    url: openapi/videoverse-webhook-api-openapi.yml
+  - type: Documentation
+    url: https://docs.prod.videoverse.dev/
+  - type: APIReference
+    url: https://docs.prod.videoverse.dev/
+  - type: Postman
+    url: https://documenter.getpostman.com/view/34141959/2sA3s6EpXt
+  - type: PostmanCollection
+    url: postman/videoverse-magnifi-partner-integration.postman_collection.json
+  - type: Authentication
+    url: authentication/videoverse-authentication.yml
+  - type: Conventions
+    url: conventions/videoverse-conventions.yml
+  - type: ErrorCatalog
+    url: errors/videoverse-problem-types.yml
+  - type: DataModel
+    url: data-model/videoverse-data-model.yml
+  - type: Webhooks
+    url: asyncapi/videoverse-magnifi-webhooks.yml
+  - type: Lifecycle
+    url: lifecycle/videoverse-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/videoverse-rate-limits.yml
+  - type: X-MCPServerCandidate
+    url: mcp/videoverse-mcp.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/videoverse-magnifi-partner-overlay.yaml
+- type: AgentSkill
+  url: skills/_index.yml
 - type: Website
   url: https://vverse.ai/
 - type: DeveloperPortal

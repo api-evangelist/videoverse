@@ -310,6 +310,8 @@ apis:
   description: The Partner API from VideoVerse — 10 operation(s) for partner.
   humanURL: https://docs.prod.videoverse.dev/
   tags:
+  - Partners
+  tags_raw:
   - Partner
   properties:
   - type: OpenAPI

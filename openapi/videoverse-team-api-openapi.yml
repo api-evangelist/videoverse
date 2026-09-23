@@ -1,0 +1,620 @@
+openapi: 3.2.0
+info:
+  title: Magnifi Partner Integration Team API
+  version: v1
+  summary: Partner API for Magnifi by VideoVerse — stream ingestion, AI clip and highlight retrieval, roster and match-schedule management, and webhook subscriptions.
+  description: Magnifi offers a comprehensive suite of API endpoints designed for seamless integration, enabling partners to access platform resources, content, and metadata efficiently.
+  contact:
+    name: Magnifi by VideoVerse
+    url: https://magnifi.ai/contact-us
+  termsOfService: https://magnifi.ai/terms-conditions
+servers:
+- url: '{PARTNER_BASE_URL}'
+  description: Templated. Magnifi publishes its partner API base only as the Postman variable {{PARTNER_BASE_URL}}; the concrete host is issued to each partner alongside the Access Key and Access Secret and is not stated in the public documentation.
+  variables:
+    PARTNER_BASE_URL:
+      default: '{PARTNER_BASE_URL}'
+      description: Partner-specific API base URL issued by Magnifi.
+security:
+- AccessKey: []
+  AccessSecret: []
+tags:
+- name: Team
+paths:
+  /v1/partner/team:
+    post:
+      operationId: addTeam
+      summary: Add team
+      tags:
+      - Team
+      description: 'Add a new team for a partner.
+
+        Request Body:
+
+
+        category (string, required): The category of the team.
+
+
+        teamName (string, required): The name of the team.
+
+
+        players (array, required): An array of players id .
+
+
+        metaData (object, required): Additional metadata for the team.
+
+
+        shortName (string): The short name of the team.
+
+
+        The metaData object is flexible, allowing you to pass any custom information needed when retrieving clip metadata.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                teamName:
+                  type: string
+                players:
+                  type: array
+                  items:
+                    type: string
+                metaData:
+                  type: object
+                  properties:
+                    shortName:
+                      type: string
+            example:
+              category: cricket
+              teamName: India 2024
+              players:
+              - 7a3f2d4e-6d68-47a7-b960-417220594eec
+              - dfc88d2d-1a3b-4e5d-a640-5d25f8dd3b2f
+              metaData:
+                shortName: MI
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      category:
+                        type: string
+                      players:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            metadata:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                jerseyNumber:
+                                  type: integer
+                                nickName:
+                                  type: string
+                      metadata:
+                        type: object
+                        properties:
+                          shortName:
+                            type: string
+                      teamId:
+                        type: string
+              examples:
+                addTeam:
+                  value:
+                    statusCode: 201
+                    message: Team added successfully
+                    data:
+                      id: 66cd9a071fb5d43575b2d123
+                      name: India 2024
+                      category: cricket
+                      players:
+                      - id: 7a3f2d4e-6d68-47a7-b960-417220594123
+                        name: Suryakumar Yadav
+                        metadata:
+                          id: s43rbbdf
+                          jerseyNumber: 63
+                          nickName: Sky
+                      - id: dfc88d2d-1a3b-4e5d-1234-5d25f8dd3b2f
+                        name: Rohit Sharma
+                        metadata:
+                          id: a34dsf
+                          jerseyNumber: 45
+                          nickName: Shana
+                      metadata:
+                        shortName: MI
+                      teamId: hCOte-L.1
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      operationId: getAllTeams
+      summary: Get all teams
+      tags:
+      - Team
+      description: 'Retrieves the list of teams associated with the partner.
+
+        Query Params:
+
+
+        page (number, required): The page number to retrieve.
+
+
+        pageSize (number, required): The number of items per page.
+
+
+        category (string, optional): Filter teams by specific category.
+
+
+        search (string, optional): Search teams by name.
+
+
+        filters (object, optional): Additional filter on team metadata, e.g., { "extId" : "12345" }.'
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        example: '1'
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+        example: '3'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      teams:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            category:
+                              type: string
+                            players:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  name:
+                                    type: string
+                                  metadata:
+                                    type: object
+                                    properties:
+                                      jerseyNumber: {}
+                                      shortName: {}
+                            metadata:
+                              type: object
+                              properties:
+                                shortName:
+                                  type: string
+                            teamId:
+                              type: string
+                      currentPage:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      totalItems:
+                        type: integer
+                      totalPages:
+                        type: integer
+              examples:
+                getAllTeams:
+                  value:
+                    statusCode: 200
+                    message: Team data retrieved successfully
+                    data:
+                      teams:
+                      - id: 66c9e7da8889cd875e829519
+                        name: Real Madrid
+                        category: football
+                        players:
+                        - id: aa783087-0ea7-9821-aad5-a383da525674
+                          name: Cristiano Ronaldo
+                          metadata:
+                            jerseyNumber: 7
+                            shortName: CR7
+                        - id: ad080635-13ca-4986-a4ce-07494afadabc
+                          name: Lionel Messi
+                          metadata:
+                            jerseyNumber: 11
+                            shortName: LM
+                        metadata:
+                          shortName: PTL
+                        teamId: hCOte-L.1
+                      - id: 66cd9a071fb4d43575b2d999
+                        name: India 2024
+                        category: cricket
+                        players:
+                        - id: 7a3f2d4e-6d68-47a7-1234-417220594eec
+                          name: Suryakumar Yadav
+                          metadata:
+                            id: s43rbbyi
+                            jerseyNumber: 63
+                            nickName: Sky
+                        - id: dfc88d2d-1a3b-4e5d-abcd-5d25f8dd3b2f
+                          name: Rohit Sharma
+                          metadata:
+                            id: a34dsf
+                            jerseyNumber: 45
+                        metadata:
+                          shortName: MI
+                        teamId: hCOte-L.2
+                      - id: 66cd9a071fb0a1l575b2d999
+                        name: Australia
+                        category: cricket
+                        players:
+                        - id: 7a3pad4e-0a68-47a7-1234-417220594eec
+                          name: Steive Smith
+                          metadata:
+                            id: s4pabbyi
+                            jerseyNumber: 61
+                        metadata:
+                          shortName: AUS
+                        teamId: hCOte-L.3
+                      currentPage: 1
+                      pageSize: 3
+                      totalItems: 22
+                      totalPages: 8
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/partner/team/{teamId}:
+    put:
+      operationId: updateTeamByTeamId
+      summary: Update team by teamId
+      tags:
+      - Team
+      description: 'Allows you to update a team in Partner''s organization.
+
+        Params:
+
+
+        TEAM_ID (URL param): Specifies the unique identifier of the TEAM.(short, unique ID)
+
+
+        Example: TEAM_ID: hCOte-L.1
+
+
+        Request Body:
+
+
+        category (string, required): The category of the team.
+
+
+        teamName (string, required): The name of the team.
+
+
+        players (array, required): An array of players id .
+
+
+        metaData (object, required): Additional metadata for the team.
+
+
+        shortName (string): The short name of the team.
+
+
+        The metaData object is flexible, allowing you to pass any custom information needed when retrieving clip metadata.'
+      parameters:
+      - name: teamId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                teamName:
+                  type: string
+                players:
+                  type: array
+                  items:
+                    type: string
+                metaData:
+                  type: object
+                  properties:
+                    shortName:
+                      type: string
+            example:
+              category: cricket
+              teamName: England
+              players:
+              - 59accd29-067a-435a-abcd-caf6b6f83123
+              metaData:
+                shortName: Eng
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      category:
+                        type: string
+                      players:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            metadata:
+                              type: object
+                              properties:
+                                jerseyNumber:
+                                  type: integer
+                      metadata:
+                        type: object
+                        properties:
+                          shortName:
+                            type: string
+                      teamId:
+                        type: string
+              examples:
+                updateTeamByTeamId:
+                  value:
+                    statusCode: 200
+                    message: Team data updated successfully
+                    data:
+                      id: 66cd9a071fb5d43575b2d123
+                      name: England
+                      category: cricket
+                      players:
+                      - id: 59accd29-067a-435a-abcd-caf6b6f83123
+                        name: Morgan
+                        metadata:
+                          jerseyNumber: 93
+                      metadata:
+                        shortName: Eng
+                      teamId: hynSs130W
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      operationId: getTeamByTeamId
+      summary: Get team by teamId
+      tags:
+      - Team
+      description: 'Retrieves the details of a specific team associated with a partner.
+
+        Params:
+
+
+        TEAM_ID (URL param): Specifies the unique identifier of the TEAM.(short, unique ID)
+
+
+        Example: TEAM_ID: hCOte-L.1'
+      parameters:
+      - name: teamId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      category:
+                        type: string
+                      players:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            metadata:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                jerseyNumber:
+                                  type: integer
+                                nickName:
+                                  type: string
+                      metadata:
+                        type: object
+                        properties:
+                          shortName:
+                            type: string
+                      teamId:
+                        type: string
+              examples:
+                getTeamByTeamId:
+                  value:
+                    statusCode: 200
+                    message: Team data retrieved successfully
+                    data:
+                      id: 66cd9a071fb5d43575b2d123
+                      name: India 2024
+                      category: cricket
+                      players:
+                      - id: 7a3f2d4e-6d68-47a7-b960-417220594123
+                        name: Suryakumar Yadav
+                        metadata:
+                          id: s43rbbdf
+                          jerseyNumber: 63
+                          nickName: Sky
+                      - id: dfc88d2d-1a3b-4e5d-1234-5d25f8dd3b2f
+                        name: Rohit Sharma
+                        metadata:
+                          id: a34dsf
+                          jerseyNumber: 45
+                          nickName: Shana
+                      metadata:
+                        shortName: MI
+                      teamId: hCOte-L.1
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      description: Magnifi error envelope. `error.code` is a Magnifi error code (see errors/videoverse-problem-types.yml).
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+            metadata:
+              type: object
+      example:
+        statusCode: 404
+        error:
+          message: Clip data not found
+          code: C001
+          metadata: {}
+    AuthError:
+      type: object
+      description: Returned when the access key or secret is missing or invalid.
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+        statusCode:
+          type: integer
+      example:
+        message: Invalid access key or access secret
+        error: Unauthorized
+        statusCode: 401
+  securitySchemes:
+    AccessKey:
+      type: apiKey
+      in: header
+      name: x-access-key
+      description: 'Partner Access Key issued by Magnifi. Documented example prefix: pak_.'
+    AccessSecret:
+      type: apiKey
+      in: header
+      name: x-access-secret
+      description: Partner Access Secret issued by Magnifi. Sent on every request alongside x-access-key.
+externalDocs:
+  description: Magnifi x Partner Integration Documentation
+  url: https://docs.prod.videoverse.dev/
+x-generated-from: postman-collection
+x-source: https://documenter.gw.postman.com/api/collections/34141959/2sA3s6EpXt?segregateAuth=true&versionTag=latest
+x-generated-by: API Evangelist enrichment pipeline (local-v3)
+x-generated-on: '2026-09-04'

@@ -1,0 +1,919 @@
+openapi: 3.2.0
+info:
+  title: Magnifi Integration Partner API
+  version: v1
+  summary: Partner API for Magnifi by VideoVerse — stream ingestion, AI clip and highlight retrieval, roster and match-schedule management, and webhook subscriptions.
+  description: Magnifi offers a comprehensive suite of API endpoints designed for seamless integration, enabling partners to access platform resources, content, and metadata efficiently.
+  contact:
+    name: Magnifi by VideoVerse
+    url: https://magnifi.ai/contact-us
+  termsOfService: https://magnifi.ai/terms-conditions
+servers:
+- url: '{PARTNER_BASE_URL}'
+  description: Templated. Magnifi publishes its partner API base only as the Postman variable {{PARTNER_BASE_URL}}; the concrete host is issued to each partner alongside the Access Key and Access Secret and is not stated in the public documentation.
+  variables:
+    PARTNER_BASE_URL:
+      default: '{PARTNER_BASE_URL}'
+      description: Partner-specific API base URL issued by Magnifi.
+security:
+- AccessKey: []
+  AccessSecret: []
+tags:
+- name: Partner
+paths:
+  /v1/partner/details:
+    get:
+      operationId: getPartnerDetails
+      summary: Get Partner Details
+      tags:
+      - Partner
+      description: Retrieve details of the partner based on their access key.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          userId:
+                            type: string
+                          userEmail:
+                            type: string
+                          userName:
+                            type: string
+                          role:
+                            type: string
+                          organizationMemberId:
+                            type: string
+                      entity:
+                        type: object
+                        properties:
+                          entityId:
+                            type: string
+                          entityType:
+                            type: string
+                          name:
+                            type: string
+              examples:
+                getPartnerDetails:
+                  value:
+                    statusCode: 200
+                    message: Partner details retrieved successfully
+                    data:
+                      user:
+                        userId: exampleId
+                        userEmail: example@magnifi.ai
+                        userName: Example
+                        role: admin
+                        organizationMemberId: wsMem_1a2f40cc-4ee6-626b-bf13-c3m54qsaee93
+                      entity:
+                        entityId: ws_basd5033-a5xcb-6715-b0hj5-5aasdde5ef
+                        entityType: workspace
+                        name: Example Org
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/partner/categories:
+    get:
+      operationId: getPartnerCategories
+      summary: Get Partner Categories
+      tags:
+      - Partner
+      description: 'Retrieves a list of categories allotted to partners to create a stream.
+
+        Query Params:
+
+
+        page (number, required): The page number to retrieve.
+
+
+        pageSize (number, required): The number of items per page.'
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        example: '1'
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+        example: '10'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      categories:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                      currentPage:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      totalItems:
+                        type: integer
+                      totalPages:
+                        type: integer
+              examples:
+                getPartnerCategories:
+                  value:
+                    statusCode: 200
+                    message: Partner categories retrieved successfully
+                    data:
+                      categories:
+                      - id: 665578026232236ef5c4c059
+                        name: basketball
+                      - id: 665578026232236ef5c4c058
+                        name: archery
+                      - id: 665578026232236ef5c4c057
+                        name: artistic_swimming
+                      - id: 665578026232236ef5c4c056
+                        name: athletics
+                      - id: 665578026232236ef5c4c055
+                        name: Badminton
+                      - id: 665578026232236ef5c4c054
+                        name: beach_volleyball
+                      - id: 665578026232236ef5c4c0510
+                        name: boxing
+                      - id: 665578026232236ef5c4c051
+                        name: canoe_slalom
+                      - id: 665578026232236ef5c4c052
+                        name: cycling_mounain_bike
+                      - id: 665578026232236ef5c4c053
+                        name: cycling_track
+                      currentPage: 1
+                      pageSize: 10
+                      totalItems: 34
+                      totalPages: 4
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/partner/templates:
+    get:
+      operationId: getPartnerTemplates
+      summary: Get Partner Templates
+      tags:
+      - Partner
+      description: Retrieve templates allotted to partners to create a stream efficiently.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      direct:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            templateName:
+                              type: string
+                      medialive:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            templateName:
+                              type: string
+                      reserved_channel:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            templateName:
+                              type: string
+              examples:
+                getPartnerTemplates:
+                  value:
+                    statusCode: 200
+                    message: Partner templates retrieved successfully
+                    data:
+                      direct:
+                      - id: 66bc71fgh3052d000718xcaa
+                        templateName: Example Direct Template
+                      medialive:
+                      - id: 66bc71fgh3052d000718xcbb
+                        templateName: Example Media Template
+                      reserved_channel:
+                      - id: 66bc71fgh3052d000718xcacc
+                        templateName: Example Reserved Channel
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/partner/workspaces:
+    get:
+      operationId: getPartnerWorkspaces
+      summary: Get Partner Workspaces
+      tags:
+      - Partner
+      description: fetch a list of workspaces associated with the partner account.
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      workspaces:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            workspaceId:
+                              type: string
+                            workspaceName:
+                              type: string
+              examples:
+                getPartnerWorkspaces:
+                  value:
+                    statusCode: 200
+                    message: Partner workspaces retrieved successfully
+                    data:
+                      workspaces:
+                      - workspaceId: ws_some_random_uuid1
+                        workspaceName: ws1
+                      - workspaceId: ws_some_random_uuid2
+                        workspaceName: ws2
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      code:
+                        type: string
+                      metadata:
+                        type: object
+              examples:
+                getPartnerWorkspacesError:
+                  value:
+                    statusCode: 404
+                    error:
+                      message: Workspace user can not fetch other workspace's data
+                      code: WS001
+                      metadata: {}
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/partner/stream-fields:
+    get:
+      operationId: getPartnerStreamCustomFields
+      summary: Get Partner Stream Custom Fields
+      tags:
+      - Partner
+      description: 'Retrieves a list of stream fields allotted to partners to create a stream/match schedule.
+
+        Query Params:
+
+
+        category (string, required): The category for which to retrieve the allotted fields.'
+      parameters:
+      - name: category
+        in: query
+        required: false
+        schema:
+          type: string
+        example: cricket
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      fields:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            category:
+                              type: string
+                            fieldName:
+                              type: string
+                            displayName:
+                              type: string
+                            required:
+                              type: boolean
+                            inputType:
+                              type: string
+                            allowedValues:
+                              type: array
+                              items:
+                                type: string
+              examples:
+                getPartnerCustomFields:
+                  value:
+                    statusCode: 200
+                    message: Partner custom fields retrieved successfully
+                    data:
+                      fields:
+                      - category: all
+                        fieldName: abcd
+                        displayName: abcd
+                        required: true
+                        inputType: SELECT
+                        allowedValues:
+                        - a
+                        - b
+                        - c
+                      - category: all
+                        fieldName: round
+                        displayName: Round
+                        required: false
+                        inputType: TEXT
+                        allowedValues: Any string
+                      - category: all
+                        fieldName: boolean_test
+                        displayName: boolean test
+                        required: false
+                        inputType: BOOLEAN
+                        allowedValues:
+                        - true
+                        - false
+                      - category: all
+                        fieldName: test_input_masking
+                        displayName: test input masking
+                        required: true
+                        inputType: INPUT_MASKING
+                        allowedValues: '9999-99-99'
+                      - category: cricket
+                        fieldName: over
+                        displayName: over
+                        required: false
+                        inputType: TEXT
+                        allowedValues: Any string
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/partner/clip-naming-templates:
+    get:
+      operationId: getPartnerClipNamingTemplates
+      summary: Get Partner Clip Naming Templates
+      tags:
+      - Partner
+      description: Retrieves a list of clip naming templates
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      templates:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            clipNamingTemplateId:
+                              type: string
+                            format:
+                              type: string
+                            templateName:
+                              type: string
+                            category:
+                              type: string
+                            isActive:
+                              type: boolean
+                            keys:
+                              type: array
+                              items:
+                                type: string
+                      currentPage:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      totalItems:
+                        type: integer
+                      totalPages:
+                        type: integer
+              examples:
+                getPartnerClipNamingTemplates:
+                  value:
+                    statusCode: 200
+                    message: Partner clip naming templates retrieved successfully
+                    data:
+                      templates:
+                      - clipNamingTemplateId: b170342f-957b-454d-b4bf-26774c0482a1
+                        format: '{{#if (ne outcome "failed")}}Still going strong!{{/if}}'
+                        templateName: example-not-equal-template
+                        category: cricket
+                        isActive: false
+                        keys:
+                        - outcome
+                      - clipNamingTemplateId: 66df134f-84c4-4fcc-b285-9dc6f3d615fb
+                        format: '{{#if (lt clipRating 3)}}Low Rating{{/if}}'
+                        templateName: example-rating-template
+                        category: cricket
+                        isActive: false
+                        keys:
+                        - clipRating
+                      - clipNamingTemplateId: 6dab8e59-b6a8-42ff-9261-7b55139fec18
+                        format: '{{aspectRatio}}_{{team1}}_{{team2}}_{{tournament}}'
+                        templateName: sample-generic-template
+                        category: football
+                        isActive: true
+                        keys:
+                        - aspectRatio
+                        - team1
+                        - team2
+                        - tournament
+                      currentPage: 1
+                      pageSize: 10
+                      totalItems: 3
+                      totalPages: 1
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/partner/storage-buckets:
+    get:
+      operationId: getPartnerStorageBuckets
+      summary: Get Partner Storage Buckets
+      tags:
+      - Partner
+      description: Retrieves a list of storage buckets of media processing
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      buckets:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            storageId:
+                              type: string
+                            storageName:
+                              type: string
+                            folderPath:
+                              type: string
+                            defaultStorage:
+                              type: boolean
+              examples:
+                getPartnerStorageBuckets:
+                  value:
+                    statusCode: 200
+                    message: Partner storage buckets retrieved successfully
+                    data:
+                      buckets:
+                      - storageId: 656822e5423177b1f71812abc
+                        storageName: example_media_storage_1
+                        folderPath: load/testing
+                        defaultStorage: false
+                      - storageId: 67c99ef8a6e56a0009fe02ab
+                        storageName: test_media_storage_mumbai
+                        folderPath: test/
+                        defaultStorage: false
+                      - storageId: 67f53101502b2800099098cd
+                        storageName: sample_multistream_storage
+                        folderPath: video_engineering/
+                        defaultStorage: false
+                      - storageId: 67ff4c6d30b0f60009d2c5ef
+                        storageName: staging_feed_storage_example
+                        folderPath: recordings/
+                        defaultStorage: false
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/partner/languages:
+    get:
+      operationId: getPartnerLanguages
+      summary: Get Partner Languages
+      tags:
+      - Partner
+      description: Retrieves a list of languages
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      languages:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            code:
+                              type: string
+              examples:
+                getPartnerLanguages:
+                  value:
+                    statusCode: 200
+                    message: Partner languages retrieved successfully
+                    data:
+                      languages:
+                      - name: Afar
+                        code: aar
+                      - name: Abkhazian
+                        code: abk
+                      - name: Achinese
+                        code: ace
+                  summary: Get Partner Languages (arrays trimmed to 3 items; full example in the source Postman collection)
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/partner/audio-options:
+    get:
+      operationId: getPartnerTemplateAudioOptions
+      summary: Get Partner Template Audio Options
+      tags:
+      - Partner
+      description: 'Retrieves multi audio options available for a template
+
+        Query Params:
+
+
+        templateName (string, required): The templatae name for which to retrieve the multi audio options'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      isMultiAudio:
+                        type: boolean
+                      audioType:
+                        type: string
+                      pids:
+                        type: array
+                        items:
+                          type: string
+                      clipLanguages:
+                        type: array
+                        items:
+                          type: string
+                      options:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            value:
+                              type: string
+                            label:
+                              type: string
+              examples:
+                getPartnerTemplateAudioOptions:
+                  value:
+                    statusCode: 200
+                    message: Entity audio options retrieved successfully
+                    data:
+                      isMultiAudio: true
+                      audioType: pid
+                      pids:
+                      - '45345'
+                      - '4545'
+                      clipLanguages:
+                      - '45345'
+                      - '4545'
+                      options:
+                      - value: '45345'
+                        label: '45345'
+                      - value: '4545'
+                        label: '4545'
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/partner/getPreSignedUrl:
+    post:
+      operationId: generatePreSignedUrl
+      summary: Generate Pre-signed Url (to be deprecated)
+      tags:
+      - Partner
+      description: 'Allows partners to obtain a pre-signed URL for a specific clip or highlight.
+
+        Request Body
+
+
+        id (string) - The unique identifier of the video.
+
+
+        videoType (string) - The type of video can be either "CLIP" or "HIGHLIGHT" or "HLCLIP".
+
+
+        Marked "[TO BE DEPRECATED]" in the provider''s own Postman collection. Use POST /v1/content/presigned-url (fetchPresignedUrl) instead.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example: "{\n    \"id\": \"66c2e22fecfcc10006fb4cfd\",\n    \"videoType\": \"CLIP\" // or \"HIGHLIGHT\" or \"HLCLIP\"\n}"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: string
+              examples:
+                generatePreSignedUrlClip:
+                  value:
+                    statusCode: 200
+                    message: Pre-signed URL generated successfully.
+                    data: https://example.amazonaws.com/an34njr/7BH9147895_2169.mp4
+                generatePreSignedUrlHighlight:
+                  value:
+                    statusCode: 200
+                    message: Pre-signed URL generated successfully.
+                    data: https://example.amazonaws.com/4e24-4999-1234-f6143d8d706a.mp4
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      code:
+                        type: string
+                      metadata:
+                        type: object
+                        properties:
+                          errorMetadata:
+                            type: string
+              examples:
+                generatePreSignedUrlClipIdNotFound:
+                  value:
+                    statusCode: 404
+                    error:
+                      message: Clip data not found
+                      code: C001
+                      metadata:
+                        errorMetadata: Clip with ID 66b2f3b2b123c9198769fade not found
+                generatePreSignedUrlEntityMismatch:
+                  value:
+                    statusCode: 404
+                    error:
+                      message: 'Permission denied: Entity mismatch'
+                      code: P001
+                      metadata:
+                        errorMetadata: 'Permission denied: Entity mismatch'
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      deprecated: true
+components:
+  schemas:
+    Error:
+      type: object
+      description: Magnifi error envelope. `error.code` is a Magnifi error code (see errors/videoverse-problem-types.yml).
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+            metadata:
+              type: object
+      example:
+        statusCode: 404
+        error:
+          message: Clip data not found
+          code: C001
+          metadata: {}
+    AuthError:
+      type: object
+      description: Returned when the access key or secret is missing or invalid.
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+        statusCode:
+          type: integer
+      example:
+        message: Invalid access key or access secret
+        error: Unauthorized
+        statusCode: 401
+  securitySchemes:
+    AccessKey:
+      type: apiKey
+      in: header
+      name: x-access-key
+      description: 'Partner Access Key issued by Magnifi. Documented example prefix: pak_.'
+    AccessSecret:
+      type: apiKey
+      in: header
+      name: x-access-secret
+      description: Partner Access Secret issued by Magnifi. Sent on every request alongside x-access-key.
+externalDocs:
+  description: Magnifi x Partner Integration Documentation
+  url: https://docs.prod.videoverse.dev/
+x-generated-from: postman-collection
+x-source: https://documenter.gw.postman.com/api/collections/34141959/2sA3s6EpXt?segregateAuth=true&versionTag=latest
+x-generated-by: API Evangelist enrichment pipeline (local-v3)
+x-generated-on: '2026-09-04'

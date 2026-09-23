@@ -1,0 +1,30 @@
+# Front Door AI Index — videoverse — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: videoverse
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: vverse.ai
+  final_host: vverse.ai
+  ownership: own
+  owner: videoverse
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 15
+  host_score: 15
+  density: 7.18
+  words: 2090
+  tiers:
+    agentic: 1
+    core: 14
+    model: 0
+  ambiguous: 5
+  top_terms:
+    AI: 13
+    automation: 3
+    gen ai: 1
+    intelligence: 1
+    prompts: 1
+    smart: 1

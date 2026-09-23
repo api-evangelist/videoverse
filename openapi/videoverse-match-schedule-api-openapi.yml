@@ -1,0 +1,1290 @@
+openapi: 3.2.0
+info:
+  title: Magnifi Partner Integration Match Schedule API
+  version: v1
+  summary: Partner API for Magnifi by VideoVerse — stream ingestion, AI clip and highlight retrieval, roster and match-schedule management, and webhook subscriptions.
+  description: Magnifi offers a comprehensive suite of API endpoints designed for seamless integration, enabling partners to access platform resources, content, and metadata efficiently.
+  contact:
+    name: Magnifi by VideoVerse
+    url: https://magnifi.ai/contact-us
+  termsOfService: https://magnifi.ai/terms-conditions
+servers:
+- url: '{PARTNER_BASE_URL}'
+  description: Templated. Magnifi publishes its partner API base only as the Postman variable {{PARTNER_BASE_URL}}; the concrete host is issued to each partner alongside the Access Key and Access Secret and is not stated in the public documentation.
+  variables:
+    PARTNER_BASE_URL:
+      default: '{PARTNER_BASE_URL}'
+      description: Partner-specific API base URL issued by Magnifi.
+security:
+- AccessKey: []
+  AccessSecret: []
+tags:
+- name: Match Schedule
+paths:
+  /v1/match-schedule:
+    post:
+      operationId: createMatchSchedule
+      summary: Create match schedule
+      tags:
+      - Match Schedule
+      description: 'Create a new match schedule with the specified details.
+
+        Request Body:
+
+
+        name (string, required): The name of the match.
+
+
+        matchStartTime (string, required): The timestamp at which the match is scheduled to start, in ISO 8601 format.
+
+
+        timezone (string, required): The timezone for the match start time, e.g., ''Etc/UTC''.
+
+
+        teams (array, optional): An array of objects representing the teams in the match.
+
+
+        teamId (string, required): The unique identifier of the team.
+
+
+        type (string, required): The role of the team in the match, e.g., ''HOME'' or ''AWAY''.
+
+
+        tournament (string, optional): The unique identifier of the tournament to which the match belongs.
+
+
+        category (string, required): The category of the match, e.g., ''cricket''.
+
+
+        extMatchId (string, optional): An optional external match ID.slug (string, optional):An optional slug for the match.
+
+
+        slug (string, optional): An optional slug for the match.
+
+
+        streamUrl (string, optional): The URL for the match stream.
+
+
+        venue (string, optional): The venue where the match is taking place.
+
+
+        streamCustomFields (object, optional): A set of custom key-value pairs defining additional stream-specific fields for the match.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                matchStartTime:
+                  type: string
+                timezone:
+                  type: string
+                teams:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      teamId:
+                        type: string
+                      type:
+                        type: string
+                tournament:
+                  type: string
+                category:
+                  type: string
+            example:
+              name: Example Match
+              matchStartTime: '2024-11-15T23:30:00'
+              timezone: Etc/UTC
+              teams:
+              - teamId: EzuBP0z12
+                type: HOME
+              - teamId: 8pAIPh9.y
+                type: AWAY
+              tournament: KQerB10o3
+              category: cricket
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      extMatchId:
+                        type: string
+                      organizationId:
+                        type: string
+                      workspaceWithAccess:
+                        type: 'null'
+                      category:
+                        type: string
+                      matchStartTime:
+                        type: string
+                        format: date-time
+                      tournament:
+                        type: string
+                      teams:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            teamId:
+                              type: string
+                            type:
+                              type: string
+                      venue:
+                        type: 'null'
+                      streamId:
+                        type: 'null'
+                      streamUrl:
+                        type: 'null'
+                      metaData:
+                        type: object
+                        properties:
+                          originalMatchStartTime:
+                            type: object
+                            properties:
+                              matchStartTime:
+                                type: string
+                              timezone:
+                                type: string
+              examples:
+                createMatchScheduleSuccess:
+                  value:
+                    statusCode: 201
+                    message: Match schedule added successfully
+                    data:
+                      id: msh_d16c0fa1-6db8-4160-b486-b431130e6231
+                      name: Example Match
+                      extMatchId: ext_match_bbefc35b-8ea6-4744-b196-505cd431010d
+                      organizationId: org_b7335033-a5fb-4815-b0f5-5ad801dde5ef
+                      workspaceWithAccess: null
+                      category: cricket
+                      matchStartTime: '2024-11-16T07:30:00.000Z'
+                      tournament: KQerB10o3
+                      teams:
+                      - teamId: hCOte-L.1
+                        type: HOME
+                      - teamId: hCOte-L.2
+                        type: AWAY
+                      venue: null
+                      streamId: null
+                      streamUrl: null
+                      metaData:
+                        originalMatchStartTime:
+                          matchStartTime: '2024-11-15T23:30:00'
+                          timezone: Etc/UTC
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      code:
+                        type: string
+                      metadata:
+                        type: object
+                        properties:
+                          errorMetadata:
+                            type: string
+              examples:
+                createMatchScheduleIncorrectTournamentID:
+                  value:
+                    statusCode: 400
+                    error:
+                      message: Tournament ID is incorrect
+                      code: MS003
+                      metadata:
+                        errorMetadata: Tournament with ID 6PHBy0V12 not found
+                createMatchScheduleTournamentCategoryMismatch:
+                  value:
+                    statusCode: 400
+                    error:
+                      message: Tournament category mismatch
+                      code: MS005
+                      metadata:
+                        errorMetadata: Tournament category football does not match with the given category
+                createMatchScheduleIncorrectCategory:
+                  value:
+                    statusCode: 400
+                    error:
+                      message: Category is incorrect
+                      code: MS004
+                      metadata:
+                        errorMetadata: Category with name shooting not found for entity org_b7335033-a5fb-4815-b0f5-5ad801dde5ef
+                createMatchScheduleIncorrectTeamID:
+                  value:
+                    statusCode: 400
+                    error:
+                      message: Team ID is incorrect
+                      code: MS002
+                      metadata:
+                        errorMetadata: Team with ID GUwQObsk77 not found
+                createMatchScheduleTeamNotInTournament:
+                  value:
+                    statusCode: 400
+                    error:
+                      message: Team not in tournament
+                      code: MS006
+                      metadata:
+                        errorMetadata: Team with ID A5Ad3-ojA not found in tournament
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      operationId: getAllMatchSchedules
+      summary: Get all match schedules
+      tags:
+      - Match Schedule
+      description: 'Retrieves a list of all match schedules.
+
+        Query Params:
+
+
+        startTime (string, required): The start time for filtering match schedules, in ISO 8601 format. Must be less than the endTime.
+
+
+        endTime (string, required): The end time for filtering match schedules, in ISO 8601 format.
+
+
+        category (string, optional): The category of the match, e.g., ''cricket''.
+
+
+        tournament (string, optional): The unique identifier of the tournament to which the match belongs.
+
+
+        search (string, optional): A search term for filtering match schedules by name or other relevant fields.
+
+
+        streamCustomFields (object, optional): An object used to filter match schedules by specific custom stream field values.'
+      parameters:
+      - name: startTime
+        in: query
+        required: false
+        schema:
+          type: string
+        example: '2024-11-01T06:30:00.000Z'
+      - name: endTime
+        in: query
+        required: false
+        schema:
+          type: string
+        example: '2024-12-31T06:30:00.000Z'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      matchSchedules:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            extMatchId:
+                              type: string
+                            organizationId:
+                              type: string
+                            workspaceWithAccess:
+                              type: 'null'
+                            category:
+                              type: string
+                            matchStartTime:
+                              type: string
+                              format: date-time
+                            tournament:
+                              type: string
+                            teams:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  teamId:
+                                    type: string
+                                  type:
+                                    type: string
+                            venue:
+                              type: 'null'
+                            streamId:
+                              type: 'null'
+                            streamUrl:
+                              type: 'null'
+                            metaData:
+                              type: object
+                              properties:
+                                originalMatchStartTime:
+                                  type: object
+                                  properties:
+                                    matchStartTime:
+                                      type: string
+                                    timezone:
+                                      type: string
+              examples:
+                getAllMatchSchedules:
+                  value:
+                    statusCode: 200
+                    message: Match schedule data retrieved successfully
+                    data:
+                      matchSchedules:
+                      - id: msh_d16c0fa1-6db8-4160-b486-b431130e6231
+                        name: Example Match
+                        extMatchId: ext_match_bbefc35b-8ea6-4744-b196-505cd431010d
+                        organizationId: org_b7335033-a5fb-4815-b0f5-5ad801dde5ef
+                        workspaceWithAccess: null
+                        category: cricket
+                        matchStartTime: '2024-11-16T07:30:00.000Z'
+                        tournament: KQerB10o3
+                        teams:
+                        - teamId: hCOte-L.1
+                          type: HOME
+                        - teamId: hCOte-L.2
+                          type: AWAY
+                        venue: null
+                        streamId: null
+                        streamUrl: null
+                        metaData:
+                          originalMatchStartTime:
+                            matchStartTime: '2024-11-15T23:30:00'
+                            timezone: Etc/UTC
+                      - id: msh_53c031ce-184f-48b3-88e3-b02a630651b2
+                        name: Example Match 2
+                        extMatchId: '23167_22'
+                        organizationId: org_b7335033-a5fb-4815-b0f5-5ad87adde5f2
+                        workspaceWithAccess: null
+                        category: ice_hockey
+                        matchStartTime: '2024-11-01T19:00:00.000Z'
+                        tournament: UqsFd3d.t
+                        teams:
+                        - teamId: hCOte-L.3
+                          type: HOME
+                        - teamId: hCOte-L.4
+                          type: AWAY
+                        venue: Wings Event Center
+                        streamId: null
+                        streamUrl: null
+                        metaData:
+                          originalMatchStartTime:
+                            matchStartTime: '2024-11-01T15:00:00'
+                            timezone: Canada/Eastern
+                      - id: msh_7cf03482-6d0b-47fa-9a8e-4874031e5ff8
+                        name: Example Match 3
+                        extMatchId: '23173_11'
+                        organizationId: org_b7335033-a5fb-4815-b0f5-5ad87adde5f3
+                        workspaceWithAccess: null
+                        category: ice_hockey
+                        matchStartTime: '2024-11-01T19:00:00.000Z'
+                        tournament: UqsFd3d.u
+                        teams:
+                        - teamId: hCOte-L.5
+                          type: HOME
+                        - teamId: hCOte-L.6
+                          type: AWAY
+                        venue: Colisée Vidéotron
+                        streamId: null
+                        streamUrl: null
+                        metaData:
+                          originalMatchStartTime:
+                            matchStartTime: '2024-11-01T15:00:00'
+                            timezone: Canada/Eastern
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/match-schedule/{matchScheduleId}:
+    patch:
+      operationId: updateMatchScheduleByMatchScheduleId
+      summary: Update match schedule by matchScheduleId
+      tags:
+      - Match Schedule
+      description: 'Update the details of a specific match schedule
+
+        Params:
+
+
+        MATCH_SCHEDULE_ID (URL param): Specifies the unique identifier of the match schedule.
+
+
+        Request Body:
+
+
+        name (string, optional): The name of the match.
+
+
+        matchStartTime (string, optional): The timestamp at which the match is scheduled to start, in ISO 8601 format.
+
+
+        timezone (string, optional): The timezone for the match start time, e.g., ''Etc/UTC''.
+
+
+        teams (array, optional): An array of objects representing the teams in the match.
+
+
+        teamId (string, required): The unique identifier of the team.
+
+
+        type (string, required): The role of the team in the match, e.g., ''HOME'' or ''AWAY''.
+
+
+        tournament (string, optional): The unique identifier of the tournament to which the match belongs.
+
+
+        category (string, optional): The category of the match, e.g., ''cricket''.
+
+
+        slug (string, optional): An optional slug for the match.
+
+
+        streamUrl (string, optional): The URL for the match stream.
+
+
+        venue (string, optional): The venue where the match is taking place.
+
+
+        streamCustomFields (object, optional): A set of custom key-value pairs defining additional stream-specific fields for the match.'
+      parameters:
+      - name: matchScheduleId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                matchStartTime:
+                  type: string
+                timezone:
+                  type: string
+                teams:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      teamId:
+                        type: string
+                      type:
+                        type: string
+                tournament:
+                  type: string
+                category:
+                  type: string
+            example:
+              name: Example Match 1
+              matchStartTime: '2024-11-15T23:30:00'
+              timezone: Etc/UTC
+              teams:
+              - teamId: EzuBP0z12
+                type: HOME
+              - teamId: 8pAIPh9.y
+                type: AWAY
+              tournament: KQerB10o3
+              category: cricket
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      extMatchId:
+                        type: string
+                      organizationId:
+                        type: string
+                      workspaceWithAccess:
+                        type: 'null'
+                      category:
+                        type: string
+                      matchStartTime:
+                        type: string
+                        format: date-time
+                      tournament:
+                        type: string
+                      teams:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            type:
+                              type: string
+                      venue:
+                        type: 'null'
+                      streamId:
+                        type: 'null'
+                      streamUrl:
+                        type: 'null'
+                      metaData:
+                        type: object
+                        properties:
+                          originalMatchStartTime:
+                            type: object
+                            properties:
+                              matchStartTime:
+                                type: string
+                              timezone:
+                                type: string
+              examples:
+                updateMatchScheduleByMatchScheduleId:
+                  value:
+                    statusCode: 200
+                    message: Match Schedule data updated successfully
+                    data:
+                      id: msh_d16c0fa1-6db8-4160-b486-b431130e6231
+                      name: Example Match 1
+                      extMatchId: ext_match_bbefc35b-8ea6-4744-b196-505cd431010d
+                      organizationId: org_b7335033-a5fb-4815-b0f5-5ad801dde5ef
+                      workspaceWithAccess: null
+                      category: cricket
+                      matchStartTime: '2024-11-16T07:30:00.000Z'
+                      tournament: KQerB10o3
+                      teams:
+                      - id: 67693f8ae7f8103007ec6286
+                        type: HOME
+                      - id: 67693f8abs78570007ec6287
+                        type: AWAY
+                      venue: null
+                      streamId: null
+                      streamUrl: null
+                      metaData:
+                        originalMatchStartTime:
+                          matchStartTime: '2024-11-15T23:30:00'
+                          timezone: Etc/UTC
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      code:
+                        type: string
+                      metadata:
+                        type: object
+                        properties:
+                          errorMetadata:
+                            type: string
+              examples:
+                updateMatchScheduleByMatchScheduleIdEntityMismatch:
+                  value:
+                    statusCode: 404
+                    error:
+                      message: 'Permission denied: Entity mismatch'
+                      code: P001
+                      metadata:
+                        errorMetadata: Organization is not allowed to edit the match
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      operationId: getMatchScheduleByMatchScheduleId
+      summary: Get match schedule by matchScheduleId
+      tags:
+      - Match Schedule
+      description: 'Retrieves the details of a specific match schedule
+
+        Params:
+
+
+        MATCH_SCHEDULE_ID (URL param): Specifies the unique identifier of the match schedule.'
+      parameters:
+      - name: matchScheduleId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      extMatchId:
+                        type: string
+                      organizationId:
+                        type: string
+                      workspaceWithAccess:
+                        type: 'null'
+                      category:
+                        type: string
+                      matchStartTime:
+                        type: string
+                        format: date-time
+                      tournament:
+                        type: string
+                      teams:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            teamId:
+                              type: string
+                            type:
+                              type: string
+                      venue:
+                        type: 'null'
+                      streamId:
+                        type: 'null'
+                      streamUrl:
+                        type: 'null'
+                      metaData:
+                        type: object
+                        properties:
+                          originalMatchStartTime:
+                            type: object
+                            properties:
+                              matchStartTime:
+                                type: string
+                              timezone:
+                                type: string
+              examples:
+                getMatchScheduleByMatchScheduleIdSuccess:
+                  value:
+                    statusCode: 200
+                    message: Match schedule data retrieved successfully
+                    data:
+                      id: msh_d16c0fa1-6db8-4160-b486-b431130e6231
+                      name: Example Match
+                      extMatchId: ext_match_bbefc35b-8ea6-4744-b196-505cd431010d
+                      organizationId: org_b7335033-a5fb-4815-b0f5-5ad801dde5ef
+                      workspaceWithAccess: null
+                      category: cricket
+                      matchStartTime: '2024-11-16T07:30:00.000Z'
+                      tournament: KQerB10o3
+                      teams:
+                      - teamId: hCOte-L.1
+                        type: HOME
+                      - teamId: hCOte-L.2
+                        type: AWAY
+                      venue: null
+                      streamId: null
+                      streamUrl: null
+                      metaData:
+                        originalMatchStartTime:
+                          matchStartTime: '2024-11-15T23:30:00'
+                          timezone: Etc/UTC
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      code:
+                        type: string
+                      metadata:
+                        type: object
+              examples:
+                getMatchScheduleByMatchScheduleIdNotFound:
+                  value:
+                    statusCode: 404
+                    error:
+                      message: Match data not found
+                      code: MS001
+                      metadata: {}
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: deleteMatchScheduleByMatchScheduleId
+      summary: Delete match schedule by matchScheduleId
+      tags:
+      - Match Schedule
+      description: 'Deletes the details of a specific match schedule
+
+        Params:
+
+
+        MATCH_SCHEDULE_ID (URL param): Specifies the unique identifier of the match schedule.'
+      parameters:
+      - name: matchScheduleId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+              examples:
+                deleteMatchScheduleByMatchScheduleId:
+                  value:
+                    statusCode: 200
+                    message: Match schedule data deleted successfully
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/match-schedule/{matchScheduleId}/de-link:
+    post:
+      operationId: deLinkByMatchScheduleId
+      summary: De-link by matchScheduleId
+      tags:
+      - Match Schedule
+      description: 'De-link a specific match schedule from the Stream it is linked with.
+
+        Params:
+
+
+        MATCH_SCHEDULE_ID (URL param): Specifies the unique identifier of the match schedule.'
+      parameters:
+      - name: matchScheduleId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+              examples:
+                deLinkByMatchScheduleId:
+                  value:
+                    statusCode: 200
+                    message: Match schedule data de-linked successfully
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      code:
+                        type: string
+                      metadata:
+                        type: object
+              examples:
+                deLinkByMatchScheduleIdError:
+                  value:
+                    statusCode: 404
+                    error:
+                      message: Match data not found
+                      code: MS001
+                      metadata: {}
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/match-schedule/{matchScheduleId}/invoke-stream:
+    post:
+      operationId: invokeStreamByMatchScheduleId
+      summary: Invoke stream by matchScheduleId
+      tags:
+      - Match Schedule
+      description: 'Create a new stream from the match schedule.
+
+        Params:
+
+
+        MATCH_SCHEDULE_ID (URL param): Specifies the unique identifier of the match schedule.
+
+
+        Request Body:
+
+
+        templateName (string, required): The name of the template.
+
+
+        title (string, optional): The title of the stream.
+
+
+        url (string, optional): The URL of the stream.
+
+
+        category (string, optional): The category of the stream.
+
+
+        fireAt (string, optional): The timestamp at which the stream should start.
+
+
+        streamStartTime (string, optional): The start time of the stream.
+
+
+        fields (object, optional): Additional fields for the stream.
+
+
+        ext_stream_id (string, optional): The external stream ID.
+
+
+        publishingWebhookUrl (string, optional): Webhook URL where you want us to send metadata.
+
+
+        hls_live_start_index (number, optional): Default value 1
+
+
+        tournamentId (string, optional): ID for the tournament to which the stream belongs.
+
+
+        homeTeamId (string, optional): ID for the home team participating in the stream.
+
+
+        awayTeamId (string, optional): ID for the away team participating in the stream.
+
+
+        shareType (enum, optional): Use this field to specify how the stream should be shared with workspaces. Note that the sharedWith field must also be provided for this to take effect. Accepted enum values:
+
+
+        original – The stream scope is shared, allowing generated clips to be accessible in both the parent organization and the shared workspace.
+
+
+        clone – The shared workspace can view clips generated in the parent organization, but the parent organization will not see clips created in the shared workspace.
+
+
+        sharedWith (string[], optional): A list of workspace IDs where the stream should be shared.
+
+
+        streamLanguage (string, optional): Default language for the stream (e.g: "en").
+
+
+        storageId (string, optional): Storage target ID for outputs. clipNamingTemplateId (string, optional): Template ID for naming generated clips.
+
+
+        audioType (string, optional): How audio is selected for multi-audio streams. Accepted values: iso, track, pid. When iso, scte35Source is required.
+
+
+        scte35Source (string, optional): Where SCTE-35 cues are read from. Required when audioType is "iso". Accepted values: SEGMENTS, MANIFESTS. Optional otherwise.
+
+
+        audioLanguages (string[], optional): Language codes for audio tracks (e.g: ["en", "es"]).
+
+
+        clipLanguages (string[], optional): Language codes for clip generation (e.g: ["en", "es"]).
+
+
+        audioTracks (string[], optional): HLS audio group or track IDs (e.g: ["aud1", "aud2"]). Use when audioType is "track".
+
+
+        pids (string[], optional): MPEG-TS audio PIDs (e.g: ["257", "258"]). Use when audioType is "pid".
+
+
+        autoAspectRatioConvert (object, optional): Auto aspect-ratio conversion. e.g: { "autoConvertAspectRatios": ["16:9"] }.
+
+
+        Note:All optional fields will automatically fall back to the corresponding values from the match schedule, if available. If any optional field is not provided explicitly in the request body, the system will use the default value from the associated match schedule.
+
+        The fields object is flexible, allowing you to pass any custom information needed when retrieving metadata.
+
+        If datafeed access is required, please reach out to us to enable it. Once access is granted, include the following within the payload object:
+
+        "datafeed": {
+
+        "type": "genius",
+
+        "competitionId": "some_id",
+
+        "tournamentId": "some_id",
+
+        "matchId": "some_id"
+
+        }'
+      parameters:
+      - name: matchScheduleId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                templateName:
+                  type: string
+                url:
+                  type: string
+                homeTeamId:
+                  type: string
+                awayTeamId:
+                  type: string
+                title:
+                  type: string
+                fireAt:
+                  type: string
+                  format: date-time
+            example:
+              templateName: Test mp4 template
+              url: https://d1rkuvpc8sfd7al.cloudfront.net/example/master_highest.m3u8
+              homeTeamId: EzuBP0123
+              awayTeamId: 8pAIPh321
+              title: new title
+              fireAt: '2025-11-10T09:30:30.293Z'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      stream:
+                        type: object
+                        properties:
+                          streamId:
+                            type: string
+                          title:
+                            type: string
+                          url:
+                            type: string
+                          category:
+                            type: string
+                          userId:
+                            type: string
+                          entityId:
+                            type: string
+                          fireAt:
+                            type: string
+                          aspectRatio:
+                            type: string
+                          status:
+                            type: string
+                          streamStartTime:
+                            type: string
+                            format: date-time
+                          fields:
+                            type: object
+                            properties:
+                              tournamentId:
+                                type: string
+                              team1Id:
+                                type: 'null'
+                              team2Id:
+                                type: 'null'
+                              stream_start_time:
+                                type: string
+                          match_start_time_on_server:
+                            type: integer
+                          templateId:
+                            type: string
+                          hls_live_start_index:
+                            type: integer
+                          publishingWebhookUrl:
+                            type: string
+                          createdAt:
+                            type: string
+                            format: date-time
+                          datafeed:
+                            type: object
+              examples:
+                invokeStreamByMatchScheduleId:
+                  value:
+                    statusCode: 202
+                    message: Stream created from Match Schedule successfully
+                    data:
+                      stream:
+                        streamId: bIaas2bkn
+                        title: PS Match
+                        url: https://qwertyul.cloudfront.net/example/master_highest.m3u8
+                        category: cricket
+                        userId: '454354'
+                        entityId: org_b7335033-4815-a5fb-b0f5-5ad87adde5ef
+                        fireAt: 2025-11-10T14:00
+                        aspectRatio: '16:9'
+                        status: Pending
+                        streamStartTime: '2025-11-10T13:57:36.000Z'
+                        fields:
+                          tournamentId: KQErBW123
+                          team1Id: null
+                          team2Id: null
+                          stream_start_time: '2025-11-10T13:57:36+00:00'
+                        match_start_time_on_server: 0
+                        templateId: 66dea8cd414ea00007d1f123
+                        hls_live_start_index: 1
+                        publishingWebhookUrl: ''
+                        createdAt: '2025-11-10T08:27:39.716Z'
+                        datafeed: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  error:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        property:
+                          type: string
+                        constraints:
+                          type: object
+                          properties:
+                            isNotEmpty:
+                              type: string
+                            isString:
+                              type: string
+              examples:
+                errorInvokeStreamByMatchScheduleId:
+                  value:
+                    statusCode: 400
+                    message: Validation failed
+                    error:
+                    - property: templateName
+                      constraints:
+                        isNotEmpty: templateName should not be empty
+                        isString: templateName must be a string
+                errorInvokeStreamByMatchScheduleId2:
+                  value:
+                    statusCode: 400
+                    error:
+                      message: Stream URL validation failed
+                      code: S002
+                      metadata:
+                        matchScheduleData:
+                          id: msh_c8921714-e4e4-4209-8287-bc33ca122b54
+                          name: A demo match
+                          extMatchId: ext_match_646ef753-422d-ed14-bba3-b35461b39222
+                          organizationId: org_b7335033-a5fb-b0f5-4815-5ad87adde5ef
+                          workspaceWithAccess: null
+                          category: cricket
+                          matchStartTime: '2025-11-10T08:30:00.000Z'
+                          tournament: KQErBW123
+                          teams: null
+                          venue: null
+                          streamId: null
+                          streamUrl: null
+                          metaData:
+                            originalMatchStartTime:
+                              matchStartTime: '2025-11-10T14:00:00'
+                              timezone: Asia/Kolkata
+                            originalMatchEndTime:
+                              matchEndTime: null
+                              timezone: Asia/Kolkata
+                        payload:
+                          title: A demo match
+                          url: null
+                          category: cricket
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      description: Magnifi error envelope. `error.code` is a Magnifi error code (see errors/videoverse-problem-types.yml).
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+            metadata:
+              type: object
+      example:
+        statusCode: 404
+        error:
+          message: Clip data not found
+          code: C001
+          metadata: {}
+    AuthError:
+      type: object
+      description: Returned when the access key or secret is missing or invalid.
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+        statusCode:
+          type: integer
+      example:
+        message: Invalid access key or access secret
+        error: Unauthorized
+        statusCode: 401
+  securitySchemes:
+    AccessKey:
+      type: apiKey
+      in: header
+      name: x-access-key
+      description: 'Partner Access Key issued by Magnifi. Documented example prefix: pak_.'
+    AccessSecret:
+      type: apiKey
+      in: header
+      name: x-access-secret
+      description: Partner Access Secret issued by Magnifi. Sent on every request alongside x-access-key.
+externalDocs:
+  description: Magnifi x Partner Integration Documentation
+  url: https://docs.prod.videoverse.dev/
+x-generated-from: postman-collection
+x-source: https://documenter.gw.postman.com/api/collections/34141959/2sA3s6EpXt?segregateAuth=true&versionTag=latest
+x-generated-by: API Evangelist enrichment pipeline (local-v3)
+x-generated-on: '2026-09-04'

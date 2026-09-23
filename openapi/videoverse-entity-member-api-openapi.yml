@@ -1,0 +1,541 @@
+openapi: 3.2.0
+info:
+  title: Magnifi Partner Integration Entity Member API
+  version: v1
+  summary: Partner API for Magnifi by VideoVerse — stream ingestion, AI clip and highlight retrieval, roster and match-schedule management, and webhook subscriptions.
+  description: Magnifi offers a comprehensive suite of API endpoints designed for seamless integration, enabling partners to access platform resources, content, and metadata efficiently.
+  contact:
+    name: Magnifi by VideoVerse
+    url: https://magnifi.ai/contact-us
+  termsOfService: https://magnifi.ai/terms-conditions
+servers:
+- url: '{PARTNER_BASE_URL}'
+  description: Templated. Magnifi publishes its partner API base only as the Postman variable {{PARTNER_BASE_URL}}; the concrete host is issued to each partner alongside the Access Key and Access Secret and is not stated in the public documentation.
+  variables:
+    PARTNER_BASE_URL:
+      default: '{PARTNER_BASE_URL}'
+      description: Partner-specific API base URL issued by Magnifi.
+security:
+- AccessKey: []
+  AccessSecret: []
+tags:
+- name: Entity Member
+paths:
+  /v1/entity-member:
+    post:
+      operationId: createEntityMember
+      summary: Create Entity Member
+      tags:
+      - Entity Member
+      description: 'Create a new entity member with the specified details.
+
+        Request Body:
+
+
+        name (string, required): The name of the entity member.
+
+
+        email (string, required): The email of the entity member.
+
+
+        password (string, required): Password of the entity member
+
+
+        role (string, required): Role for the entity member, e.g., ''user'' or ''reviewer''.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+            example:
+              name: Test user
+              email: molola3631@1200b.com
+              password: abcd@1234
+              role: user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      entityMemberId:
+                        type: string
+                      userId:
+                        type: string
+                      role:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+              examples:
+                createEntityMember:
+                  value:
+                    statusCode: 200
+                    message: Entity member created successfully
+                    data:
+                      entityMemberId: orgMem_2f603e98-36ff-413f-94ca-509c0f0f7518
+                      userId: nLnZRyj7c
+                      role: user
+                      name: Test user
+                      email: molola3631@1200b.com
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      operationId: getEntityMembers
+      summary: Get Entity Members
+      tags:
+      - Entity Member
+      description: Retrieve existing entity members of the entity.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      entityMembers:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            entityMemberId:
+                              type: string
+                            role:
+                              type: string
+                            userId:
+                              type: string
+                            name:
+                              type: string
+                            email:
+                              type: string
+                      currentPage:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      totalItems:
+                        type: integer
+                      totalPages:
+                        type: integer
+              examples:
+                getEntityMembers:
+                  value:
+                    statusCode: 200
+                    message: Entity members retrieved successfully
+                    data:
+                      entityMembers:
+                      - entityMemberId: orgMem_b593b0f3-83b5-45ee-8bf9-c9a9f1ebc123
+                        role: admin
+                        userId: v988DduzK
+                        name: Test User 11
+                        email: testadmin@magnifi.ai
+                      - entityMemberId: orgMem_b12a71dd-c377-4c6b-abcd-4feeec972456
+                        role: user
+                        userId: .KKFPAEdw
+                        name: Test User 8
+                        email: user8@mailinator.com
+                      - entityMemberId: orgMem_f9b0603d-2eb6-4ae3-8894-bff51d90f789
+                        role: admin
+                        userId: HtH74Kk-c
+                        name: Test User 7
+                        email: admin@mailinator.com
+                      - entityMemberId: orgMem_f6072a00-dd34-4cdb-99f9-cd86f79da011
+                        role: user
+                        userId: nLnZRyj7c
+                        name: Test user
+                        email: molola3631@1200b.com
+                      currentPage: 1
+                      pageSize: 10
+                      totalItems: 4
+                      totalPages: 1
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/entity-member/assign:
+    post:
+      operationId: assignRoleToUser
+      summary: Assign Role to User
+      tags:
+      - Entity Member
+      description: 'Assign a role to a assignable user.
+
+        Request Body:
+
+
+        userId (string, required): User ID of the user.
+
+
+        role (string, required): Role for the user.
+
+        Note: Allowed values for roles are "user" or "reviewer"'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                role:
+                  type: string
+            example:
+              userId: 0WXRsQbMQ
+              role: user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      entityMemberId:
+                        type: string
+                      userId:
+                        type: string
+                      role:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+              examples:
+                assignRoleToUser:
+                  value:
+                    statusCode: 200
+                    message: Role assigned to entity member successfully
+                    data:
+                      entityMemberId: orgMem_a1a9d3bd-b2e5-464f-b611-52c19e1d888b
+                      userId: 0WXRsQbMQ
+                      role: user
+                      name: Test User 2
+                      email: faerWellUser@gmail.com
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/user/assignable:
+    get:
+      operationId: getAssignableUsers
+      summary: Get Assignable Users
+      tags:
+      - Entity Member
+      description: Retrieve assignable users for the entity.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            userId:
+                              type: string
+                            name:
+                              type: string
+                            email:
+                              type: string
+                      currentPage:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      totalItems:
+                        type: integer
+                      totalPages:
+                        type: integer
+              examples:
+                getAssignableUsers:
+                  value:
+                    statusCode: 200
+                    message: Assignable users retrieved successfully
+                    data:
+                      users:
+                      - userId: 0WXRsQbMQ
+                        name: Test User 2
+                        email: faerWellUser@gmail.com
+                      - userId: 3nbdsANEm
+                        name: Test User 3
+                        email: faerWelladmin@gmail.com
+                      - userId: 728WCsrKz
+                        name: Test User 4
+                        email: april29@gmail.com
+                      - userId: C9u-f4KqS
+                        name: Test User 5
+                        email: nik123@yopmail.com
+                      - userId: FkqNXsehK
+                        name: Test User 6
+                        email: asdfsdf@magnifi.ai
+                      currentPage: 1
+                      pageSize: 10
+                      totalItems: 5
+                      totalPages: 1
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/entity-member/{entityMemberId}:
+    put:
+      operationId: updateEntityMemberRole
+      summary: Update Entity Member Role
+      tags:
+      - Entity Member
+      description: 'Update the role of a existing entity member
+
+        Params:
+
+
+        ENTITY_MEMBER_ID (URL param): Specifies the unique identifier of the entity member. (e.g orgMem_xxx or wsMem_xxx)
+
+
+        Request Body:
+
+
+        role (string, optional): Role for the entity member. (e.g ''user'' or ''reviewer'')'
+      parameters:
+      - name: entityMemberId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+            example:
+              role: reviewer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      entityMemberId:
+                        type: string
+                      userId:
+                        type: string
+                      role:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+              examples:
+                updateEntityMemberRole:
+                  value:
+                    statusCode: 200
+                    message: Role updated for entity member successfully
+                    data:
+                      entityMemberId: orgMem_a1a9d3bd-b2e5-464f-b611-52c19e1d888b
+                      userId: nLnZRyj7c
+                      role: reviewer
+                      name: Test User
+                      email: molola3631@1200b.com
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: removeEntityMember
+      summary: Remove Entity Member
+      tags:
+      - Entity Member
+      description: 'Remove access of a existing entity member.
+
+        Params:
+
+
+        ENTITY_MEMBER_ID (URL param): Specifies the unique identifier of the entity member. (e.g orgMem_xxx or wsMem_xxx)'
+      parameters:
+      - name: entityMemberId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+              examples:
+                removeEntityMember:
+                  value:
+                    statusCode: 200
+                    message: Role removed from entity member successfully
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      description: Magnifi error envelope. `error.code` is a Magnifi error code (see errors/videoverse-problem-types.yml).
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+            metadata:
+              type: object
+      example:
+        statusCode: 404
+        error:
+          message: Clip data not found
+          code: C001
+          metadata: {}
+    AuthError:
+      type: object
+      description: Returned when the access key or secret is missing or invalid.
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+        statusCode:
+          type: integer
+      example:
+        message: Invalid access key or access secret
+        error: Unauthorized
+        statusCode: 401
+  securitySchemes:
+    AccessKey:
+      type: apiKey
+      in: header
+      name: x-access-key
+      description: 'Partner Access Key issued by Magnifi. Documented example prefix: pak_.'
+    AccessSecret:
+      type: apiKey
+      in: header
+      name: x-access-secret
+      description: Partner Access Secret issued by Magnifi. Sent on every request alongside x-access-key.
+externalDocs:
+  description: Magnifi x Partner Integration Documentation
+  url: https://docs.prod.videoverse.dev/
+x-generated-from: postman-collection
+x-source: https://documenter.gw.postman.com/api/collections/34141959/2sA3s6EpXt?segregateAuth=true&versionTag=latest
+x-generated-by: API Evangelist enrichment pipeline (local-v3)
+x-generated-on: '2026-09-04'

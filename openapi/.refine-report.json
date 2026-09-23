@@ -1,0 +1,46 @@
+{
+  "provider": "videoverse",
+  "sources": [
+    "_original/videoverse-magnifi-partner-openapi.yml"
+  ],
+  "outputs": [
+    "videoverse-catch-me-up-api-openapi.yml",
+    "videoverse-clips-api-openapi.yml",
+    "videoverse-content-api-openapi.yml",
+    "videoverse-entity-member-api-openapi.yml",
+    "videoverse-highlight-clips-api-openapi.yml",
+    "videoverse-highlights-api-openapi.yml",
+    "videoverse-match-schedule-api-openapi.yml",
+    "videoverse-match-video-api-openapi.yml",
+    "videoverse-partner-api-openapi.yml",
+    "videoverse-player-api-openapi.yml",
+    "videoverse-streams-api-openapi.yml",
+    "videoverse-team-api-openapi.yml",
+    "videoverse-tournament-api-openapi.yml",
+    "videoverse-webhook-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "videoverse-magnifi-partner-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "videoverse-catch-me-up-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoverse-clips-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoverse-content-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoverse-entity-member-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoverse-highlight-clips-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoverse-highlights-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoverse-match-schedule-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoverse-match-video-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoverse-partner-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoverse-player-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoverse-streams-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoverse-team-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoverse-tournament-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "videoverse-webhook-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

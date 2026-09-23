@@ -1,0 +1,327 @@
+openapi: 3.2.0
+info:
+  title: Magnifi Partner Integration Clips API
+  version: v1
+  summary: Partner API for Magnifi by VideoVerse — stream ingestion, AI clip and highlight retrieval, roster and match-schedule management, and webhook subscriptions.
+  description: Magnifi offers a comprehensive suite of API endpoints designed for seamless integration, enabling partners to access platform resources, content, and metadata efficiently.
+  contact:
+    name: Magnifi by VideoVerse
+    url: https://magnifi.ai/contact-us
+  termsOfService: https://magnifi.ai/terms-conditions
+servers:
+- url: '{PARTNER_BASE_URL}'
+  description: Templated. Magnifi publishes its partner API base only as the Postman variable {{PARTNER_BASE_URL}}; the concrete host is issued to each partner alongside the Access Key and Access Secret and is not stated in the public documentation.
+  variables:
+    PARTNER_BASE_URL:
+      default: '{PARTNER_BASE_URL}'
+      description: Partner-specific API base URL issued by Magnifi.
+security:
+- AccessKey: []
+  AccessSecret: []
+tags:
+- name: Clips
+paths:
+  /v1/clip/{clipId}:
+    get:
+      operationId: getByClipId
+      summary: Get by clipId
+      tags:
+      - Clips
+      description: 'Retrieves clip metadata based on the clipId.
+
+        Params:
+
+
+        CLIP_ID (URL param): Specifies the unique identifier of the clip to fetch.'
+      parameters:
+      - name: clipId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      version:
+                        type: integer
+                      metadata:
+                        type: object
+                        properties:
+                          clip:
+                            type: object
+                            properties:
+                              clipId:
+                                type: string
+                              clipTitle:
+                                type: string
+                              streamId:
+                                type: string
+                              startTime:
+                                type: number
+                              endTime:
+                                type: number
+                              duration:
+                                type: integer
+                              category:
+                                type: string
+                              aspectRatio:
+                                type: string
+                              stream_start_time_buffer_secs:
+                                type: 'null'
+                              process_start_time:
+                                type: 'null'
+                              aspectRatiosAvailableIn:
+                                type: array
+                                items:
+                                  type: string
+                              matchDetails:
+                                type: object
+                                properties:
+                                  teams:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties:
+                                        id: {}
+                                        name: {}
+                                  players:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties:
+                                        id: {}
+                                        name: {}
+                                        kind: {}
+                                  tournament:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                      name:
+                                        type: string
+                                  events:
+                                    type: array
+                                    items:
+                                      type: string
+                                  outcome:
+                                    type: string
+                              partnerData:
+                                type: object
+                                properties:
+                                  internal-v1:
+                                    type: object
+                                    properties:
+                                      run:
+                                        type: string
+                                      over:
+                                        type: string
+                                      wicket:
+                                        type: string
+                                      batterScores:
+                                        type: string
+                                      bowlerStats:
+                                        type: string
+              examples:
+                getByClipIdCricket:
+                  value:
+                    statusCode: 200
+                    message: Clip data retrieved successfully
+                    data:
+                      version: 2
+                      metadata:
+                        clip:
+                          clipId: 647491f1681ca15d9cfeaad4
+                          clipTitle: Clip 4
+                          streamId: W5Snsmv2P
+                          startTime: 886.5
+                          endTime: 896.5
+                          duration: 10
+                          category: cricket
+                          aspectRatio: '16:9'
+                          stream_start_time_buffer_secs: null
+                          process_start_time: null
+                          aspectRatiosAvailableIn:
+                          - '16:9'
+                          - '9:16'
+                          - '1:1'
+                          - '4:5'
+                          matchDetails:
+                            teams:
+                            - id: BFSorMfzt
+                              name: Scotland U19
+                            - id: NivmunBS1
+                              name: The Vision Shipping
+                            players:
+                            - id: ae1d87f7-f126-43e3-b485-6a3ed9e1fcc3
+                              name: Oliver Davidson
+                              kind: batsman
+                            - id: 315810aa-332e-4c87-8987-870e08320c52
+                              name: Lyle Robertson
+                              kind: bowler
+                            tournament:
+                              id: BJ7NujHO8
+                              name: Sharjah CBFS T20
+                            events:
+                            - six
+                            outcome: six
+                          partnerData:
+                            internal-v1:
+                              run: '79'
+                              over: '12.1'
+                              wicket: '2'
+                              batterScores: ''
+                              bowlerStats: ''
+                getByClipIdFootball:
+                  value:
+                    statusCode: 200
+                    message: Clip data retrieved successfully
+                    data:
+                      version: 2
+                      metadata:
+                        clip:
+                          clipId: 662b9100d4b86b00082f7d94
+                          clipTitle: testB
+                          streamId: DJ4jIOMNO
+                          startTime: 5661
+                          endTime: 5671.98
+                          duration: 10.96
+                          category: football
+                          aspectRatio: '16:9'
+                          stream_start_time_buffer_secs: null
+                          process_start_time: null
+                          matchDetails:
+                            teams:
+                            - id: YHsPTu2oN
+                              name: T2
+                            - id: ceE9II0gt
+                              name: T1
+                            players:
+                            - id: ac33d42d-3abd-4845-9e6e-8222d7a1f048
+                              name: K Zouma
+                              kind: ''
+                            - id: ae3e83ab-766d-4be9-b096-defaf7941f8f
+                              name: Kepa A
+                              kind: ''
+                            tournament:
+                              id: 6h3RNlc0j
+                              name: Footballl_new
+                            events:
+                            - Goal
+                            outcome: Goal
+                          partnerData:
+                            internal-v1:
+                              gameClock: '67:23'
+                              homeTeamScore: '1'
+                              visitorScore: '2'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      code:
+                        type: string
+                      metadata:
+                        type: object
+              examples:
+                getByClipIdClipNotFound:
+                  value:
+                    statusCode: 404
+                    error:
+                      message: Clip data not found
+                      code: C001
+                      metadata: {}
+                getByClipIdPermissionDenied:
+                  value:
+                    statusCode: 404
+                    error:
+                      message: 'Permission denied: Entity mismatch'
+                      code: P001
+                      metadata: {}
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      description: Magnifi error envelope. `error.code` is a Magnifi error code (see errors/videoverse-problem-types.yml).
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+            metadata:
+              type: object
+      example:
+        statusCode: 404
+        error:
+          message: Clip data not found
+          code: C001
+          metadata: {}
+    AuthError:
+      type: object
+      description: Returned when the access key or secret is missing or invalid.
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+        statusCode:
+          type: integer
+      example:
+        message: Invalid access key or access secret
+        error: Unauthorized
+        statusCode: 401
+  securitySchemes:
+    AccessKey:
+      type: apiKey
+      in: header
+      name: x-access-key
+      description: 'Partner Access Key issued by Magnifi. Documented example prefix: pak_.'
+    AccessSecret:
+      type: apiKey
+      in: header
+      name: x-access-secret
+      description: Partner Access Secret issued by Magnifi. Sent on every request alongside x-access-key.
+externalDocs:
+  description: Magnifi x Partner Integration Documentation
+  url: https://docs.prod.videoverse.dev/
+x-generated-from: postman-collection
+x-source: https://documenter.gw.postman.com/api/collections/34141959/2sA3s6EpXt?segregateAuth=true&versionTag=latest
+x-generated-by: API Evangelist enrichment pipeline (local-v3)
+x-generated-on: '2026-09-04'

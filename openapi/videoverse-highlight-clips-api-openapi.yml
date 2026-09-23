@@ -1,0 +1,335 @@
+openapi: 3.2.0
+info:
+  title: Magnifi Partner Integration Highlight Clips API
+  version: v1
+  summary: Partner API for Magnifi by VideoVerse — stream ingestion, AI clip and highlight retrieval, roster and match-schedule management, and webhook subscriptions.
+  description: Magnifi offers a comprehensive suite of API endpoints designed for seamless integration, enabling partners to access platform resources, content, and metadata efficiently.
+  contact:
+    name: Magnifi by VideoVerse
+    url: https://magnifi.ai/contact-us
+  termsOfService: https://magnifi.ai/terms-conditions
+servers:
+- url: '{PARTNER_BASE_URL}'
+  description: Templated. Magnifi publishes its partner API base only as the Postman variable {{PARTNER_BASE_URL}}; the concrete host is issued to each partner alongside the Access Key and Access Secret and is not stated in the public documentation.
+  variables:
+    PARTNER_BASE_URL:
+      default: '{PARTNER_BASE_URL}'
+      description: Partner-specific API base URL issued by Magnifi.
+security:
+- AccessKey: []
+  AccessSecret: []
+tags:
+- name: Highlight Clips
+paths:
+  /v1/hlclip/{hlclipId}:
+    get:
+      operationId: getHlClipByHlclipId
+      summary: Get hlClip by hlclipId
+      tags:
+      - Highlight Clips
+      description: 'Retrieves highlight clip metadata based on the hlClipId.
+
+        Params:
+
+
+        HLCLIP_ID (URL param): Specifies the unique identifier of the clip to fetch.'
+      parameters:
+      - name: hlclipId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      version:
+                        type: integer
+                      metadata:
+                        type: object
+                        properties:
+                          hlClip:
+                            type: object
+                            properties:
+                              hlClipId:
+                                type: string
+                              hlClipTitle:
+                                type: string
+                              streamId:
+                                type: string
+                              duration:
+                                type: 'null'
+                              category:
+                                type: string
+                              aspectRatio:
+                                type: string
+                              clipsCount:
+                                type: integer
+                              clips:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    clipId:
+                                      type: string
+                                    clipTitle:
+                                      type: string
+                                    streamId:
+                                      type: string
+                                    startTime:
+                                      type: integer
+                                    endTime:
+                                      type: integer
+                                    duration:
+                                      type: integer
+                                    category:
+                                      type: string
+                                    aspectRatio:
+                                      type: string
+                                    stream_start_time_buffer_secs:
+                                      type: 'null'
+                                    process_start_time:
+                                      type: string
+                                    stream_start_time:
+                                      type: string
+                                    matchDetails:
+                                      type: object
+                                      properties:
+                                        teams: {}
+                                        players: {}
+                                        tournament: {}
+                                        events: {}
+                                        outcome: {}
+                                    partnerData:
+                                      type: object
+                                      properties:
+                                        internal-v1: {}
+                              matchDetails:
+                                type: object
+                                properties:
+                                  teams:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties:
+                                        id: {}
+                                        name: {}
+                                  tournament:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                      name:
+                                        type: string
+                                  events:
+                                    type: array
+                                    items: {}
+                                  outcome:
+                                    type: string
+              examples:
+                getHlClipByHlClipId:
+                  value:
+                    statusCode: 200
+                    message: Highlight clip data retrieved successfully
+                    data:
+                      version: 2
+                      metadata:
+                        hlClip:
+                          hlClipId: 667e5625e9abc500078d0549
+                          hlClipTitle: Example hl clip
+                          streamId: YKHXpGUZD
+                          duration: null
+                          category: basketball
+                          aspectRatio: '16:9'
+                          clipsCount: 2
+                          clips:
+                          - clipId: 667c28ef0babc1000737f156
+                            clipTitle: Clip 1
+                            streamId: kE-BOWJP
+                            startTime: 8410
+                            endTime: 8419
+                            duration: 9
+                            category: basketball
+                            aspectRatio: '16:9'
+                            stream_start_time_buffer_secs: null
+                            process_start_time: ''
+                            stream_start_time: 2024-06-26T17:27
+                            matchDetails:
+                              teams:
+                              - id: 1QsrbSYabc
+                                name: Nt Dolphins
+                              players:
+                              - id: 09a8bc21-dc85-41abc-870e-339eea7dd1ae
+                                name: Dominique Antonio Tham 32
+                                kind: ''
+                                teamId: 1QsrbSYabc
+                              tournament:
+                                id: qZJsWiLGG
+                                name: Vba 2024
+                              events:
+                              - Dunk
+                              outcome: Dunk
+                            partnerData:
+                              internal-v1:
+                                internalStreamId: kE-B0OWJP
+                          - clipId: 667c1d57e9abc5000785fdce
+                            clipTitle: Clip 2
+                            streamId: YKHXpGUZD
+                            startTime: 6268.973
+                            endTime: 6280.173
+                            duration: 11.166667
+                            category: basketball
+                            aspectRatio: '16:9'
+                            stream_start_time_buffer_secs: null
+                            process_start_time: ''
+                            stream_start_time: 2024-06-26T17:27
+                            matchDetails:
+                              teams:
+                              - id: 1QsrbRXabc
+                                name: HN Buffaloes
+                              players:
+                              - id: 09a8bc21-dc85-41abc-870e-339eea7dd2ae
+                                name: Hassan Nigel Thomas
+                                kind: ''
+                                teamId: 1QsrbRXabc
+                              - id: 09a8bc21-dc85-41abc-870e-339eea7dd3ae
+                                name: George Devin Peterson
+                                kind: ''
+                                teamId: 1QsrbRXabc
+                              tournament:
+                                id: qZJsWiLGG
+                                name: Vba 2024
+                              events:
+                              - Dunk
+                              - Assist
+                              outcome: Dunk
+                            partnerData:
+                              internal-v1:
+                                internalStreamId: YKHXpGUZD
+                          matchDetails:
+                            teams:
+                            - id: 1QsrbRXabc
+                              name: HN Buffaloes
+                            - id: 1QsrbSYabc
+                              name: Nt Dolphins
+                            tournament:
+                              id: qZJsWiLGG
+                              name: Vba 2024
+                            events: []
+                            outcome: ''
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      code:
+                        type: string
+                      metadata:
+                        type: object
+                        properties:
+                          errorMetadata:
+                            type: string
+              examples:
+                getHlClipByHlclipIdIncorrectHlClipId:
+                  value:
+                    statusCode: 404
+                    error:
+                      message: Data not found
+                      code: D002
+                      metadata:
+                        errorMetadata: The provided ID corresponds to a clipId, not a highlight clipId.
+                getHlClipByHlclipIdNotFound:
+                  value:
+                    statusCode: 404
+                    error:
+                      message: Data not found
+                      code: D002
+                      metadata:
+                        errorMetadata: Highlight clip not found with id 667e5625e9dbf421278d054a
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      description: Magnifi error envelope. `error.code` is a Magnifi error code (see errors/videoverse-problem-types.yml).
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+            metadata:
+              type: object
+      example:
+        statusCode: 404
+        error:
+          message: Clip data not found
+          code: C001
+          metadata: {}
+    AuthError:
+      type: object
+      description: Returned when the access key or secret is missing or invalid.
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+        statusCode:
+          type: integer
+      example:
+        message: Invalid access key or access secret
+        error: Unauthorized
+        statusCode: 401
+  securitySchemes:
+    AccessKey:
+      type: apiKey
+      in: header
+      name: x-access-key
+      description: 'Partner Access Key issued by Magnifi. Documented example prefix: pak_.'
+    AccessSecret:
+      type: apiKey
+      in: header
+      name: x-access-secret
+      description: Partner Access Secret issued by Magnifi. Sent on every request alongside x-access-key.
+externalDocs:
+  description: Magnifi x Partner Integration Documentation
+  url: https://docs.prod.videoverse.dev/
+x-generated-from: postman-collection
+x-source: https://documenter.gw.postman.com/api/collections/34141959/2sA3s6EpXt?segregateAuth=true&versionTag=latest
+x-generated-by: API Evangelist enrichment pipeline (local-v3)
+x-generated-on: '2026-09-04'

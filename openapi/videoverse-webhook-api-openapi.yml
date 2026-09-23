@@ -1,0 +1,849 @@
+openapi: 3.2.0
+info:
+  title: Magnifi Partner Integration Webhook API
+  version: v1
+  summary: Partner API for Magnifi by VideoVerse — stream ingestion, AI clip and highlight retrieval, roster and match-schedule management, and webhook subscriptions.
+  description: Magnifi offers a comprehensive suite of API endpoints designed for seamless integration, enabling partners to access platform resources, content, and metadata efficiently.
+  contact:
+    name: Magnifi by VideoVerse
+    url: https://magnifi.ai/contact-us
+  termsOfService: https://magnifi.ai/terms-conditions
+servers:
+- url: '{PARTNER_BASE_URL}'
+  description: Templated. Magnifi publishes its partner API base only as the Postman variable {{PARTNER_BASE_URL}}; the concrete host is issued to each partner alongside the Access Key and Access Secret and is not stated in the public documentation.
+  variables:
+    PARTNER_BASE_URL:
+      default: '{PARTNER_BASE_URL}'
+      description: Partner-specific API base URL issued by Magnifi.
+security:
+- AccessKey: []
+  AccessSecret: []
+tags:
+- name: Webhook
+paths:
+  /v1/webhook/notifier/topics:
+    get:
+      operationId: fetchTopics
+      summary: Fetch Topics
+      tags:
+      - Webhook
+      description: Retrives all the available topics for the partner to create subscription.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        resourceType:
+                          type: string
+                        operations:
+                          type: array
+                          items:
+                            type: string
+                        standardFields:
+                          type: array
+                          items:
+                            type: string
+                        customFields:
+                          type: array
+                          items: {}
+              examples:
+                fetchTopics:
+                  value:
+                    statusCode: 200
+                    message: Topics fetched successfully
+                    data:
+                    - resourceType: stream
+                      operations:
+                      - CREATE
+                      - UPDATE
+                      standardFields:
+                      - title
+                      - status
+                      customFields: []
+                    - resourceType: matchVideo
+                      operations:
+                      - CREATE
+                      - UPDATE
+                      standardFields:
+                      - matchVideoTitle
+                      - status
+                      - progress
+                      - videoUrl
+                      customFields: []
+                    - resourceType: clip
+                      operations:
+                      - CREATE
+                      - UPDATE
+                      standardFields:
+                      - clipTitle
+                      - startTime
+                      - endTime
+                      - duration
+                      - players
+                      - outcome
+                      - rating
+                      - transcript
+                      - videoUrl
+                      - videoThumbnailUrl
+                      - aspectRatiosAvailableIn
+                      customFields:
+                      - fieldName: batsman
+                        category: cricket
+                      - fieldName: bowler
+                        category: cricket
+                      - fieldName: corner
+                        category: football
+                    - resourceType: hlClip
+                      operations:
+                      - CREATE
+                      - UPDATE
+                      standardFields:
+                      - hlClipTitle
+                      - duration
+                      - players
+                      - outcome
+                      - rating
+                      - videoUrl
+                      - clips
+                      customFields:
+                      - fieldName: batsman
+                        category: cricket
+                      - fieldName: bowler
+                        category: cricket
+                      - fieldName: corner
+                        category: football
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/webhook/notifier/subscription:
+    post:
+      operationId: createSubscription
+      summary: Create Subscription
+      tags:
+      - Webhook
+      description: 'Create a new webhook subscription with the specified details.
+
+        Request Body:
+
+        resourceType (enum, required): The type of resource to monitor.
+
+        operations (array of enum, required): List of operations to monitor.
+
+        standardFields (array of strings, optional): List of standard fields to include in the webhook payload. [To be used with _UPDATE_ operation only.]
+
+        customFields (array of objects, optional): List of custom fields to include in the webhook payload. [To be used with _UPDATE_ operation only.]
+
+
+        fieldName (string, required): Name of the custom field
+
+
+        category (string, required): Category of the custom field
+
+
+        webhookUrl (string, required): The HTTPS URL where webhook notifications will be sent. Must be a valid HTTPS URL with protocol, host, and TLD (e.g., https://example.com).
+
+        secretKey (string, optional): Secret key for webhook signature verification. If not passed, we will fallback to a default key.
+
+
+        Must be between 32 and 128 characters long
+
+
+        Can only contain letters, numbers, hyphens, and underscores
+
+
+        description (string, optional): A description of the webhook subscription.
+
+        Note: The available fields and their validation may change over time. It''s recommended to:
+
+
+        Use the /webhook/notifier/topics endpoint to get the current list of available fields for each resource type
+
+
+        Check the API response for any validation errors
+
+
+        Monitor the webhook delivery status through the provided endpoints'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                resourceType:
+                  type: string
+                operations:
+                  type: array
+                  items:
+                    type: string
+                standardFields:
+                  type: array
+                  items:
+                    type: string
+                customFields:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      fieldName:
+                        type: string
+                      category:
+                        type: string
+                webhookUrl:
+                  type: string
+                secretKey:
+                  type: string
+                description:
+                  type: string
+            example:
+              resourceType: clip
+              operations:
+              - UPDATE
+              standardFields:
+              - clipTitle
+              - rating
+              customFields:
+              - fieldName: run
+                category: cricket
+              - fieldName: goal
+                category: football
+              webhookUrl: https://api.example.com/webhooks/notifications
+              secretKey: your-32-character-secret-key-here-123456789
+              description: Webhook subscription for clip events
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      subscription:
+                        type: object
+                        properties:
+                          subscriptionId:
+                            type: string
+                          resourceType:
+                            type: string
+                          operations:
+                            type: array
+                            items:
+                              type: string
+                          webhookUrl:
+                            type: string
+                          isActive:
+                            type: boolean
+                          description:
+                            type: string
+                          failureCount:
+                            type: integer
+                          createdAt:
+                            type: string
+                            format: date-time
+                          updatedAt:
+                            type: string
+                            format: date-time
+              examples:
+                createSubscriptionListenToCreateCLIPOperation:
+                  value:
+                    statusCode: 201
+                    message: Subscription created successfully
+                    data:
+                      subscription:
+                        subscriptionId: <subscriptionId>
+                        resourceType: clip
+                        operations:
+                        - CREATE
+                        webhookUrl: https://api.example.com/webhooks/notifications
+                        isActive: true
+                        description: Webhook subscription for clip events
+                        failureCount: 0
+                        createdAt: '2024-03-21T10:00:00.000Z'
+                        updatedAt: '2024-03-21T10:00:00.000Z'
+                createSubscriptionListenToCreateSTREAMOperation:
+                  value:
+                    statusCode: 201
+                    message: Subscription created successfully
+                    data:
+                      subscription:
+                        subscriptionId: <subscriptionId>
+                        resourceType: stream
+                        operations:
+                        - CREATE
+                        webhookUrl: https://api.example.com/webhooks/notifications
+                        isActive: true
+                        description: Webhook subscription for stream events
+                        failureCount: 0
+                        createdAt: '2024-03-21T10:00:00.000Z'
+                        updatedAt: '2024-03-21T10:00:00.000Z'
+                createSubscriptionListenToCLIPUpdateOperation:
+                  value:
+                    statusCode: 201
+                    message: Subscription created successfully
+                    data:
+                      subscription:
+                        subscriptionId: <subscriptionId>
+                        resourceType: clip
+                        operations:
+                        - UPDATE
+                        standardFields:
+                        - clipTitle
+                        - rating
+                        customFields:
+                        - fieldName: run
+                          category: cricket
+                        - fieldName: goal
+                          category: football
+                        webhookUrl: https://api.example.com/webhooks/notifications
+                        isActive: true
+                        description: Webhook subscription for clip events
+                        failureCount: 0
+                        createdAt: '2024-03-21T10:00:00.000Z'
+                        updatedAt: '2024-03-21T10:00:00.000Z'
+                createSubscriptionListenToSTREAMUpdateOperation:
+                  value:
+                    statusCode: 201
+                    message: Subscription created successfully
+                    data:
+                      subscription:
+                        subscriptionId: <subscriptionId>
+                        resourceType: stream
+                        operations:
+                        - UPDATE
+                        standardFields:
+                        - title
+                        - status
+                        customFields: []
+                        webhookUrl: https://api.example.com/webhooks/notifications
+                        isActive: true
+                        description: Webhook subscription for stream events
+                        failureCount: 0
+                        createdAt: '2024-03-21T10:00:00.000Z'
+                        updatedAt: '2024-03-21T10:00:00.000Z'
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/webhook/notifier/subscription/{subscriptionId}:
+    patch:
+      operationId: updateSubscription
+      summary: Update Subscription
+      tags:
+      - Webhook
+      description: 'Update an existing webhook subscription with the specified details.
+
+        Request Body:
+
+        resourceType (enum, required): The type of resource to monitor.
+
+        operations (array of enum, required): List of operations to monitor.
+
+        standardFields (array of strings, optional): List of standard fields to include in the webhook payload.
+
+        customFields (array of objects, optional): List of custom fields to include in the webhook payload.
+
+
+        fieldName (string, required): Name of the custom field
+
+
+        category (string, required): Category of the custom field
+
+
+        webhookUrl (string, required): The HTTPS URL where webhook notifications will be sent. Must be a valid HTTPS URL with protocol, host, and TLD (e.g., https://example.com).
+
+        secretKey (string, optional): Secret key for webhook signature verification. If not passed, we will fallback to a default key.
+
+
+        Must be between 32 and 128 characters long
+
+
+        Can only contain letters, numbers, hyphens, and underscores
+
+
+        description (string, optional): A description of the webhook subscription.
+
+        Note: The available fields and their validation may change over time. It''s recommended to:
+
+
+        Use the /webhook/notifier/topics endpoint to get the current list of available fields for each resource type
+
+
+        Check the API response for any validation errors
+
+
+        Monitor the webhook delivery status through the provided endpoints'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                webhookUrl:
+                  type: string
+                secretKey:
+                  type: string
+            example:
+              webhookUrl: https://new-api.example.com/webhooks/notifications
+              secretKey: new-32-character-secret-key-here-123456789
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      subscription:
+                        type: object
+                        properties:
+                          subscriptionId:
+                            type: string
+                          resourceType:
+                            type: string
+                          operations:
+                            type: array
+                            items:
+                              type: string
+                          standardFields:
+                            type: array
+                            items:
+                              type: string
+                          customFields:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                fieldName:
+                                  type: string
+                                category:
+                                  type: string
+                          webhookUrl:
+                            type: string
+                          isActive:
+                            type: boolean
+                          description:
+                            type: string
+                          createdAt:
+                            type: string
+                            format: date-time
+                          updatedAt:
+                            type: string
+                            format: date-time
+              examples:
+                updateSubscription:
+                  value:
+                    statusCode: 200
+                    message: Subscription updated successfully
+                    data:
+                      subscription:
+                        subscriptionId: <subscriptionId>
+                        resourceType: clip
+                        operations:
+                        - CREATE
+                        - UPDATE
+                        standardFields:
+                        - clipTitle
+                        - rating
+                        customFields:
+                        - fieldName: run
+                          category: cricket
+                        - fieldName: goal
+                          category: football
+                        webhookUrl: https://new-api.example.com/webhooks/notifications
+                        isActive: true
+                        description: Webhook subscription for clip events
+                        createdAt: '2024-03-21T10:00:00.000Z'
+                        updatedAt: '2024-03-21T10:30:00.000Z'
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      operationId: getSubscriptionBySubscriptionId
+      summary: Get Subscription by subscriptionId
+      tags:
+      - Webhook
+      description: Retrieve the subscription by its unique identifier.
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      subscription:
+                        type: object
+                        properties:
+                          subscriptionId:
+                            type: string
+                          partnerConfigId:
+                            type: string
+                          resourceType:
+                            type: string
+                          operations:
+                            type: array
+                            items:
+                              type: string
+                          standardFields:
+                            type: array
+                            items:
+                              type: string
+                          customFields:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                category:
+                                  type: string
+                                fieldName:
+                                  type: string
+                          description:
+                            type: string
+                          webhookUrl:
+                            type: string
+                          isActive:
+                            type: boolean
+                          createdAt:
+                            type: string
+                            format: date-time
+                          updatedAt:
+                            type: string
+                            format: date-time
+              examples:
+                getSubscriptionBySubscriptionId:
+                  value:
+                    statusCode: 200
+                    message: Subscription fetched successfully
+                    data:
+                      subscription:
+                        subscriptionId: <subscriptionId>
+                        partnerConfigId: <partnerConfigId>
+                        resourceType: clip
+                        operations:
+                        - CREATE
+                        - UPDATE
+                        standardFields:
+                        - clipTitle
+                        - players
+                        - outcome
+                        customFields:
+                        - category: cricket
+                          fieldName: run
+                        - category: cricket
+                          fieldName: wicket
+                        description: Webhook subscription for clip events
+                        webhookUrl: <example webhook>
+                        isActive: true
+                        createdAt: '2025-06-10T11:44:31.860Z'
+                        updatedAt: '2025-06-10T11:44:31.860Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      code:
+                        type: string
+                      metadata:
+                        type: object
+              examples:
+                subscriptionNotFound:
+                  value:
+                    statusCode: 400
+                    error:
+                      message: Partner notifier subscription not found
+                      code: PA012
+                      metadata: {}
+                subscriptionInactive:
+                  value:
+                    statusCode: 400
+                    error:
+                      message: Partner notifier subscription is inactive
+                      code: PA013
+                      metadata: {}
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: deleteSubscription
+      summary: Delete Subscription
+      tags:
+      - Webhook
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/webhook/notifier/subscriptions:
+    get:
+      operationId: getSubscriptions
+      summary: Get Subscriptions
+      tags:
+      - Webhook
+      description: Retreive all the active subscriiption available
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      subscriptions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            subscriptionId:
+                              type: string
+                            partnerConfigId:
+                              type: string
+                            resourceType:
+                              type: string
+                            operations:
+                              type: array
+                              items:
+                                type: string
+                            standardFields:
+                              type: array
+                              items:
+                                type: string
+                            customFields:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  category:
+                                    type: string
+                                  fieldName:
+                                    type: string
+                            description:
+                              type: string
+                            webhookUrl:
+                              type: string
+                            isActive:
+                              type: boolean
+                            createdAt:
+                              type: string
+                              format: date-time
+                            updatedAt:
+                              type: string
+                              format: date-time
+              examples:
+                getSubscriptions:
+                  value:
+                    statusCode: 200
+                    message: Subscriptions fetched successfully
+                    data:
+                      subscriptions:
+                      - subscriptionId: <subscriptionId>
+                        partnerConfigId: <partnerConfigId>
+                        resourceType: clip
+                        operations:
+                        - CREATE
+                        - UPDATE
+                        standardFields:
+                        - clipTitle
+                        - players
+                        - outcome
+                        customFields:
+                        - category: cricket
+                          fieldName: run
+                        - category: cricket
+                          fieldName: wicket
+                        description: Webhook subscription for clip events
+                        webhookUrl: <example webhook>
+                        isActive: true
+                        createdAt: '2025-06-10T11:44:31.860Z'
+                        updatedAt: '2025-06-10T11:44:31.860Z'
+                      - subscriptionId: <subscriptionId>
+                        partnerConfigId: <partnerConfigId>
+                        resourceType: stream
+                        operations:
+                        - CREATE
+                        standardFields: []
+                        customFields: []
+                        description: Webhook subscription for stream events
+                        webhookUrl: <example webhook>
+                        isActive: true
+                        createdAt: '2025-06-10T12:10:00.509Z'
+                        updatedAt: '2025-06-10T12:10:00.509Z'
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      description: Magnifi error envelope. `error.code` is a Magnifi error code (see errors/videoverse-problem-types.yml).
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+            metadata:
+              type: object
+      example:
+        statusCode: 404
+        error:
+          message: Clip data not found
+          code: C001
+          metadata: {}
+    AuthError:
+      type: object
+      description: Returned when the access key or secret is missing or invalid.
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+        statusCode:
+          type: integer
+      example:
+        message: Invalid access key or access secret
+        error: Unauthorized
+        statusCode: 401
+  securitySchemes:
+    AccessKey:
+      type: apiKey
+      in: header
+      name: x-access-key
+      description: 'Partner Access Key issued by Magnifi. Documented example prefix: pak_.'
+    AccessSecret:
+      type: apiKey
+      in: header
+      name: x-access-secret
+      description: Partner Access Secret issued by Magnifi. Sent on every request alongside x-access-key.
+externalDocs:
+  description: Magnifi x Partner Integration Documentation
+  url: https://docs.prod.videoverse.dev/
+x-generated-from: postman-collection
+x-source: https://documenter.gw.postman.com/api/collections/34141959/2sA3s6EpXt?segregateAuth=true&versionTag=latest
+x-generated-by: API Evangelist enrichment pipeline (local-v3)
+x-generated-on: '2026-09-04'

@@ -1,0 +1,156 @@
+openapi: 3.2.0
+info:
+  title: Magnifi Partner Integration Content API
+  version: v1
+  summary: Partner API for Magnifi by VideoVerse — stream ingestion, AI clip and highlight retrieval, roster and match-schedule management, and webhook subscriptions.
+  description: Magnifi offers a comprehensive suite of API endpoints designed for seamless integration, enabling partners to access platform resources, content, and metadata efficiently.
+  contact:
+    name: Magnifi by VideoVerse
+    url: https://magnifi.ai/contact-us
+  termsOfService: https://magnifi.ai/terms-conditions
+servers:
+- url: '{PARTNER_BASE_URL}'
+  description: Templated. Magnifi publishes its partner API base only as the Postman variable {{PARTNER_BASE_URL}}; the concrete host is issued to each partner alongside the Access Key and Access Secret and is not stated in the public documentation.
+  variables:
+    PARTNER_BASE_URL:
+      default: '{PARTNER_BASE_URL}'
+      description: Partner-specific API base URL issued by Magnifi.
+security:
+- AccessKey: []
+  AccessSecret: []
+tags:
+- name: Content
+paths:
+  /v1/content/presigned-url:
+    post:
+      operationId: fetchPresignedUrl
+      summary: Fetch Presigned Url
+      tags:
+      - Content
+      description: 'Fetch Video & Thumbnail presigned url for a content.
+
+        Request Body:
+
+
+        contentId (string, required): Can be any clipId, highlightId, hlClipId, matchVideoId
+
+
+        contentType (enum, required): "clip" | "highlight" | "hlClip" | "matchVideo"
+
+
+        aspectRatio (string, optional): Only for clips available in multiple aspect ratios, you can include this field to retrieve the correct aspect ratio video URL. The available values can be found in aspectRatiosAvailable field in clip metadata. If absent, we consider the default aspect ratio which in most case is 16:9.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contentId:
+                  type: string
+                contentType:
+                  type: string
+            example:
+              contentId: '{{CONTENT_ID}}'
+              contentType: '{{CONTENT_TYPE}}'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      videoUrl:
+                        type: string
+                      thumbnailUrl:
+                        type: string
+              examples:
+                fetchPresignedUrl:
+                  value:
+                    statusCode: 200
+                    message: Presigned url retrieved
+                    data:
+                      videoUrl: <presignedUrl>
+                      thumbnailUrl: <presignedUrl>
+                fetchPresignedUrlClipWithDifferentAspectRatio:
+                  value:
+                    statusCode: 200
+                    message: Presigned url retrieved
+                    data:
+                      videoUrl: <presignedUrl>
+                      thumbnailUrl: <presignedUrl>
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      description: Magnifi error envelope. `error.code` is a Magnifi error code (see errors/videoverse-problem-types.yml).
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+            metadata:
+              type: object
+      example:
+        statusCode: 404
+        error:
+          message: Clip data not found
+          code: C001
+          metadata: {}
+    AuthError:
+      type: object
+      description: Returned when the access key or secret is missing or invalid.
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+        statusCode:
+          type: integer
+      example:
+        message: Invalid access key or access secret
+        error: Unauthorized
+        statusCode: 401
+  securitySchemes:
+    AccessKey:
+      type: apiKey
+      in: header
+      name: x-access-key
+      description: 'Partner Access Key issued by Magnifi. Documented example prefix: pak_.'
+    AccessSecret:
+      type: apiKey
+      in: header
+      name: x-access-secret
+      description: Partner Access Secret issued by Magnifi. Sent on every request alongside x-access-key.
+externalDocs:
+  description: Magnifi x Partner Integration Documentation
+  url: https://docs.prod.videoverse.dev/
+x-generated-from: postman-collection
+x-source: https://documenter.gw.postman.com/api/collections/34141959/2sA3s6EpXt?segregateAuth=true&versionTag=latest
+x-generated-by: API Evangelist enrichment pipeline (local-v3)
+x-generated-on: '2026-09-04'

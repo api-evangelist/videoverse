@@ -1,0 +1,657 @@
+openapi: 3.2.0
+info:
+  title: Magnifi Partner Integration Tournament API
+  version: v1
+  summary: Partner API for Magnifi by VideoVerse — stream ingestion, AI clip and highlight retrieval, roster and match-schedule management, and webhook subscriptions.
+  description: Magnifi offers a comprehensive suite of API endpoints designed for seamless integration, enabling partners to access platform resources, content, and metadata efficiently.
+  contact:
+    name: Magnifi by VideoVerse
+    url: https://magnifi.ai/contact-us
+  termsOfService: https://magnifi.ai/terms-conditions
+servers:
+- url: '{PARTNER_BASE_URL}'
+  description: Templated. Magnifi publishes its partner API base only as the Postman variable {{PARTNER_BASE_URL}}; the concrete host is issued to each partner alongside the Access Key and Access Secret and is not stated in the public documentation.
+  variables:
+    PARTNER_BASE_URL:
+      default: '{PARTNER_BASE_URL}'
+      description: Partner-specific API base URL issued by Magnifi.
+security:
+- AccessKey: []
+  AccessSecret: []
+tags:
+- name: Tournament
+paths:
+  /v1/partner/tournament:
+    post:
+      operationId: addTournament
+      summary: Add tournament
+      tags:
+      - Tournament
+      description: 'Create a new tournament for a partner.
+
+        Request Body:
+
+
+        category (string, required): The category of the tournament.
+
+
+        tournamentName (string, required): The name of the tournament.
+
+
+        teams (array of strings, required): An array of teams id participating in the tournament. Note: This should be a short ID. (e.g., [ "bynSs130W" ])
+
+
+        metaData (object, required): Additional metadata for the tournament.
+
+
+        The metaData object is flexible, allowing you to pass any custom information needed when retrieving clip metadata.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                tournamentName:
+                  type: string
+                teams:
+                  type: array
+                  items:
+                    type: string
+                metaData:
+                  type: object
+                  properties:
+                    sponsored:
+                      type: string
+            example:
+              category: cricket
+              tournamentName: ICC Worldcup 2024
+              teams:
+              - bynSs130W
+              metaData:
+                sponsored: TATA
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      category:
+                        type: string
+                      teams:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            players:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  name:
+                                    type: string
+                                  metadata:
+                                    type: object
+                                    properties:
+                                      id: {}
+                                      jerseyNumber: {}
+                                      nickName: {}
+                            metadata:
+                              type: object
+                              properties:
+                                shortName:
+                                  type: string
+                      metadata:
+                        type: object
+                        properties:
+                          sponsored:
+                            type: string
+              examples:
+                addTournament:
+                  value:
+                    statusCode: 201
+                    message: Tournament added successfully
+                    data:
+                      id: ABCHu4NPb
+                      name: ICC Worldcup 2024
+                      category: cricket
+                      teams:
+                      - id: 66cd9a071fb5d43575b2d123
+                        name: india 2023
+                        players:
+                        - id: dfc88d2d-1a3b-4e5d-1234-5d25f8dd3b2f
+                          name: Rohit Sharma
+                          metadata:
+                            id: a34dsf
+                            jerseyNumber: 45
+                            nickName: Shana
+                        metadata:
+                          shortName: MI
+                      metadata:
+                        sponsored: TATA
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      operationId: getAllTournaments
+      summary: Get all tournaments
+      tags:
+      - Tournament
+      description: 'Retrieves a list of tournaments associated with the partner.
+
+        Query Params:
+
+
+        page (number, required): The page number to retrieve.
+
+
+        pageSize (number, required): The number of items per page.
+
+
+        category (string, optional): Filter tournaments by specific category.
+
+
+        search (string, optional): Search tournament by name.
+
+
+        filters (object, optional): Additional filter on tournament metadata, e.g., { "extId" : "12345" }.'
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        example: '1'
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+        example: '2'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      tournaments:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            category:
+                              type: string
+                            teams:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  name:
+                                    type: string
+                                  players:
+                                    type: array
+                                    items: {}
+                                  metadata:
+                                    type: object
+                                  teamId:
+                                    type: string
+                            metadata:
+                              type: object
+                            teamId:
+                              type: string
+                      currentPage:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      totalItems:
+                        type: integer
+                      totalPages:
+                        type: integer
+              examples:
+                getAllTournaments:
+                  value:
+                    statusCode: 200
+                    message: Tournament data retrieved successfully
+                    data:
+                      tournaments:
+                      - id: oq2y6eaZ7
+                        name: Pro League
+                        category: Kabaddi
+                        teams:
+                        - id: 88efe561bae41883b1ab4dd7
+                          name: portugal
+                          players:
+                          - id: aa783087-0ea7-ab3e-aad5-a383da525674
+                            name: Cristiano Ronaldo
+                            metadata:
+                              jerseyNumber: 7
+                              shortName: CR7
+                          - id: ad080635-2aed-4986-a4ce-07494afade51
+                            name: Lionel Messi
+                            metadata:
+                              jerseyNumber: 11
+                              shortName: LM
+                          metadata: {}
+                          teamId: bynSs130W
+                        - id: 66c87b38adf7f907a2c64765
+                          name: Chennai Super Kings
+                          players:
+                          - id: 6e2821ce-e1a7-4e51-930f-a6429205a1e6
+                            name: Virat Kohli
+                            metadata:
+                              id: 18RCB
+                              name: Chiku
+                          metadata:
+                            shortName: CSK
+                        metadata: {}
+                        teamId: bynSs130A
+                      - id: CZAHu4NPb
+                        name: ICC Worldcup 2024
+                        category: cricket
+                        teams:
+                        - id: 66cd9a071fb5d43575b2d967
+                          name: india 2023
+                          players:
+                          - id: dfc88d2d-1a3b-4e5d-a640-5d25f8dd3b2f
+                            name: Rohit Sharma
+                            metadata:
+                              id: a34dsf
+                              jerseyNumber: 45
+                              nickName: Shana
+                          metadata:
+                            shortName: MI
+                        metadata:
+                          sponsored: TATA
+                        teamId: bynSs230W
+                      currentPage: 1
+                      pageSize: 2
+                      totalItems: 10
+                      totalPages: 5
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/partner/tournament/{tournamentId}:
+    put:
+      operationId: updateTournamentByTournamentId
+      summary: Update tournament by tournamentId
+      tags:
+      - Tournament
+      description: 'Allows you to update a tournament in Partner''s organization.
+
+        Params:
+
+
+        TOURNAMEMT_ID (URL param): Specifies the unique identifier of the Tournament.
+
+
+        Request Body:
+
+
+        category (string, required): The category of the tournament.
+
+
+        tournamentName (string, required): The name of the tournament.
+
+
+        teams (array of strings, required): An array of teams id participating in the tournament. Note: This should be a short ID. (e.g., [ "bynSs130W" ])
+
+
+        metaData (object, required): Additional metadata for the tournament.
+
+
+        The metaData object is flexible, allowing you to pass any custom information needed when retrieving clip metadata.'
+      parameters:
+      - name: tournamentId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                tournamentName:
+                  type: string
+                teams:
+                  type: array
+                  items:
+                    type: string
+                metaData:
+                  type: object
+                  properties:
+                    sponsored:
+                      type: string
+            example:
+              category: cricket
+              tournamentName: ICC Worldcup 2023
+              teams:
+              - hynSs130W
+              - Sw8LmzGRm
+              metaData:
+                sponsored: ICC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      category:
+                        type: string
+                      teams:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            players:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  name:
+                                    type: string
+                                  category:
+                                    type: string
+                                  metadata:
+                                    type: object
+                                    properties:
+                                      jerseyNumber: {}
+                            metadata:
+                              type: object
+                              properties:
+                                shortName:
+                                  type: string
+                            teamId:
+                              type: string
+                      metadata:
+                        type: object
+                        properties:
+                          sponsored:
+                            type: string
+              examples:
+                updateTournamentByTournamentId:
+                  value:
+                    statusCode: 200
+                    message: Tournament data updated successfully
+                    data:
+                      id: ABCHu4NPb
+                      name: ICC Worldcup 2023
+                      category: cricket
+                      teams:
+                      - id: 66cd9a071fb5d43575b2d967
+                        name: England
+                        players:
+                        - id: 59accd29-067a-435a-abcd-caf6b6f83123
+                          name: Morgan
+                          category: cricket
+                          metadata:
+                            jerseyNumber: 93
+                        metadata:
+                          shortName: Eng
+                        teamId: hynSs130W
+                      - id: 66cc5d81ca1c3333288888ba
+                        name: Africa
+                        players:
+                        - id: aa783087-0707-4de9-airf-a383da525674
+                          name: AB Devilliars
+                          metadata:
+                            jerseyNumber: 7
+                        metadata:
+                          shortName: Afr
+                        teamId: Sw8LmzGRm
+                      metadata:
+                        sponsored: ICC
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      operationId: getTournamentByTournamentId
+      summary: Get tournament by tournamentId
+      tags:
+      - Tournament
+      description: 'Retrieves details of a specific tournament associated with the partner.
+
+        Params:
+
+
+        TOURNAMEMT_ID (URL param): Specifies the unique identifier of the Tournament.'
+      parameters:
+      - name: tournamentId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      category:
+                        type: string
+                      teams:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            players:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  name:
+                                    type: string
+                                  metadata:
+                                    type: object
+                                    properties:
+                                      id: {}
+                                      jerseyNumber: {}
+                                      nickName: {}
+                            metadata:
+                              type: object
+                              properties:
+                                shortName:
+                                  type: string
+                            teamId:
+                              type: string
+                      metadata:
+                        type: object
+                        properties:
+                          sponsored:
+                            type: string
+              examples:
+                getTournamentByTournamentId:
+                  value:
+                    statusCode: 200
+                    message: Tournament data retrieved successfully
+                    data:
+                      id: ABCHu4NPb
+                      name: ICC Worldcup 2024
+                      category: cricket
+                      teams:
+                      - id: 66cd9a071fb5d43575b2d123
+                        name: india 2023
+                        players:
+                        - id: dfc88d2d-1a3b-4e5d-1234-5d25f8dd3b2f
+                          name: Rohit Sharma
+                          metadata:
+                            id: a34dsf
+                            jerseyNumber: 45
+                            nickName: Shana
+                        metadata:
+                          shortName: MI
+                        teamId: bynSs130W
+                      metadata:
+                        sponsored: TATA
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      description: Magnifi error envelope. `error.code` is a Magnifi error code (see errors/videoverse-problem-types.yml).
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+            metadata:
+              type: object
+      example:
+        statusCode: 404
+        error:
+          message: Clip data not found
+          code: C001
+          metadata: {}
+    AuthError:
+      type: object
+      description: Returned when the access key or secret is missing or invalid.
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+        statusCode:
+          type: integer
+      example:
+        message: Invalid access key or access secret
+        error: Unauthorized
+        statusCode: 401
+  securitySchemes:
+    AccessKey:
+      type: apiKey
+      in: header
+      name: x-access-key
+      description: 'Partner Access Key issued by Magnifi. Documented example prefix: pak_.'
+    AccessSecret:
+      type: apiKey
+      in: header
+      name: x-access-secret
+      description: Partner Access Secret issued by Magnifi. Sent on every request alongside x-access-key.
+externalDocs:
+  description: Magnifi x Partner Integration Documentation
+  url: https://docs.prod.videoverse.dev/
+x-generated-from: postman-collection
+x-source: https://documenter.gw.postman.com/api/collections/34141959/2sA3s6EpXt?segregateAuth=true&versionTag=latest
+x-generated-by: API Evangelist enrichment pipeline (local-v3)
+x-generated-on: '2026-09-04'

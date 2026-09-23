@@ -1,0 +1,325 @@
+openapi: 3.2.0
+info:
+  title: Magnifi Partner Integration Match Video API
+  version: v1
+  summary: Partner API for Magnifi by VideoVerse — stream ingestion, AI clip and highlight retrieval, roster and match-schedule management, and webhook subscriptions.
+  description: Magnifi offers a comprehensive suite of API endpoints designed for seamless integration, enabling partners to access platform resources, content, and metadata efficiently.
+  contact:
+    name: Magnifi by VideoVerse
+    url: https://magnifi.ai/contact-us
+  termsOfService: https://magnifi.ai/terms-conditions
+servers:
+- url: '{PARTNER_BASE_URL}'
+  description: Templated. Magnifi publishes its partner API base only as the Postman variable {{PARTNER_BASE_URL}}; the concrete host is issued to each partner alongside the Access Key and Access Secret and is not stated in the public documentation.
+  variables:
+    PARTNER_BASE_URL:
+      default: '{PARTNER_BASE_URL}'
+      description: Partner-specific API base URL issued by Magnifi.
+security:
+- AccessKey: []
+  AccessSecret: []
+tags:
+- name: Match Video
+paths:
+  /v1/match-video/{matchVideoId}:
+    get:
+      operationId: getMatchVideoByMatchVideoId
+      summary: Get match video by matchVideoId
+      tags:
+      - Match Video
+      description: 'Retrieves match video information based on the matchVideoId.
+
+        Params:
+
+
+        MATCH_VIDEO_ID (URL param): Specifies the unique identifier of the match video to fetch.'
+      parameters:
+      - name: matchVideoId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      matchVideoId:
+                        type: string
+                      type:
+                        type: string
+                      streamId:
+                        type: string
+                      status:
+                        type: string
+                      matchVideoTitle:
+                        type: string
+                      startTime:
+                        type: string
+                      endTime:
+                        type: string
+                      progress:
+                        type: integer
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+                      isActive:
+                        type: boolean
+              examples:
+                getMatchVideoByMatchVideoId:
+                  value:
+                    statusCode: 200
+                    message: Match video retrieved successfully
+                    data:
+                      matchVideoId: 994d9541-4294-9803-9238-9ac03c97e117
+                      type: partial-video
+                      streamId: RDP08FBIV
+                      status: COMPLETED
+                      matchVideoTitle: custom duration
+                      startTime: 00:00:00
+                      endTime: 00:02:34
+                      progress: 100
+                      createdAt: '2025-11-12T08:25:36.117Z'
+                      updatedAt: '2025-11-12T08:26:29.943Z'
+                      isActive: true
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/match-video:
+    get:
+      operationId: getAllMatchVideos
+      summary: Get all match videos
+      tags:
+      - Match Video
+      description: 'Retrieves a list of all match videos.
+
+        Query Params:
+
+
+        type (enum, optional): partial-video | full-video.
+
+
+        status (enum, optional): INITIATED | PROCESSING | COMPLETED | FAILED.
+
+
+        search (string, optional): Searches for match video by title.
+
+
+        sort (number, optional): -1 = Newest, 1 = Oldest. By default, items are sorted by newest.
+
+
+        page (number, required): The page number to retrieve.
+
+
+        pageSize (number, required): The number of items per page.'
+      parameters:
+      - name: search
+        in: query
+        required: false
+        schema:
+          type: string
+        example: export
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+        example: partial-video
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+        example: COMPLETED
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: integer
+        example: '-1'
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        example: '1'
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+        example: '10'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      matchVideos:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            matchVideoId:
+                              type: string
+                            matchVideoTitle:
+                              type: string
+                            streamId:
+                              type: string
+                            startTime:
+                              type: string
+                            endTime:
+                              type: string
+                            status:
+                              type: string
+                            type:
+                              type: string
+                            progress:
+                              type: integer
+                            createdAt:
+                              type: string
+                              format: date-time
+                            updatedAt:
+                              type: string
+                              format: date-time
+                            isActive:
+                              type: boolean
+                      currentPage:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      totalItems:
+                        type: integer
+                      totalPages:
+                        type: integer
+              examples:
+                getAllMatchVideos:
+                  value:
+                    statusCode: 200
+                    message: Match videos retrieved successfully
+                    data:
+                      matchVideos:
+                      - matchVideoId: 9f8bd385-4ebe-b2f2-c5b6-45fbe5e7917a
+                        matchVideoTitle: First Example
+                        streamId: pfXngzUvzA
+                        startTime: 00:10:00
+                        endTime: 00:20:00
+                        status: COMPLETED
+                        type: partial-video
+                        progress: 100
+                        createdAt: '2026-03-27T09:26:08.759Z'
+                        updatedAt: '2026-03-27T09:27:16.130Z'
+                        isActive: true
+                      - matchVideoId: a169320e-b7b0-c221-4076-e23b333ccbb4
+                        matchVideoTitle: Second Example
+                        streamId: pfXngzUvzA
+                        startTime: 00:00:00
+                        endTime: 00:27:19
+                        status: COMPLETED
+                        type: full-video
+                        progress: 100
+                        createdAt: '2026-03-27T09:25:54.463Z'
+                        updatedAt: '2026-03-27T09:27:27.608Z'
+                        isActive: true
+                      currentPage: 1
+                      pageSize: 10
+                      totalItems: 2
+                      totalPages: 1
+        '401':
+          description: Unauthorized — invalid or missing x-access-key / x-access-secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        default:
+          description: Error response carrying a Magnifi error code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      description: Magnifi error envelope. `error.code` is a Magnifi error code (see errors/videoverse-problem-types.yml).
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+            metadata:
+              type: object
+      example:
+        statusCode: 404
+        error:
+          message: Clip data not found
+          code: C001
+          metadata: {}
+    AuthError:
+      type: object
+      description: Returned when the access key or secret is missing or invalid.
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+        statusCode:
+          type: integer
+      example:
+        message: Invalid access key or access secret
+        error: Unauthorized
+        statusCode: 401
+  securitySchemes:
+    AccessKey:
+      type: apiKey
+      in: header
+      name: x-access-key
+      description: 'Partner Access Key issued by Magnifi. Documented example prefix: pak_.'
+    AccessSecret:
+      type: apiKey
+      in: header
+      name: x-access-secret
+      description: Partner Access Secret issued by Magnifi. Sent on every request alongside x-access-key.
+externalDocs:
+  description: Magnifi x Partner Integration Documentation
+  url: https://docs.prod.videoverse.dev/
+x-generated-from: postman-collection
+x-source: https://documenter.gw.postman.com/api/collections/34141959/2sA3s6EpXt?segregateAuth=true&versionTag=latest
+x-generated-by: API Evangelist enrichment pipeline (local-v3)
+x-generated-on: '2026-09-04'

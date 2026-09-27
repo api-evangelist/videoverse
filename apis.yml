@@ -27,7 +27,7 @@ tags:
 - Video Editing
 - Highlights
 - Content Creation
-- Machine-Learning
+- Machine Learning
 - Webhook
 tags_raw:
 - video
@@ -40,6 +40,7 @@ tags_raw:
 - content-creation
 - machine-learning
 - webhooks
+- Machine-Learning
 apis:
 - aid: videoverse:videoverse-catch-me-up-api
   name: VideoVerse Catch me up API

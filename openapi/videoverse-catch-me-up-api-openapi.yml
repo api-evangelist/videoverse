@@ -146,20 +146,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    AuthError:
-      type: object
-      description: Returned when the access key or secret is missing or invalid.
-      properties:
-        message:
-          type: string
-        error:
-          type: string
-        statusCode:
-          type: integer
-      example:
-        message: Invalid access key or access secret
-        error: Unauthorized
-        statusCode: 401
     Error:
       type: object
       description: Magnifi error envelope. `error.code` is a Magnifi error code (see errors/videoverse-problem-types.yml).
@@ -181,6 +167,20 @@ components:
           message: Clip data not found
           code: C001
           metadata: {}
+    AuthError:
+      type: object
+      description: Returned when the access key or secret is missing or invalid.
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+        statusCode:
+          type: integer
+      example:
+        message: Invalid access key or access secret
+        error: Unauthorized
+        statusCode: 401
   securitySchemes:
     AccessKey:
       type: apiKey

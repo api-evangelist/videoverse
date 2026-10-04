@@ -512,6 +512,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/videoverse-capability-edges.yml
+  name: VideoVerse Business Capability Map
 - type: Overlay
   url: overlays/videoverse-magnifi-partner-overlay.yaml
 - type: AgentSkill
